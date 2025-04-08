@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="p5.js"></script>
+    <script src="p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <table class="layout" cellspacing="10" cellpadding="0">
+      <tr>
+        <td colspan="2">
+          <div id="menu"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <main>
+          </main>
+        </td>
+        <td rowspan="2" valign="top">
+          <div id="property-grid"></div>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <div id="object-list"></div>
+        </td>
+      </tr>
+      <tr>
+        <td id="code-td" colspan="2">
+          <div id="code">
+            <textarea id="code-content" readonly="readonly"></textarea>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <script src="paint_anchor.js"></script>
+    <script src="paint_object.js"></script>
+    <script src="paint_object_list.js"></script>
+    <script src="paint_object_properties.js"></script>
+    <script src="sketch.js"></script>
+  </body>
+</html>
