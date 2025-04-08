@@ -172,30 +172,22 @@ div.path-list-buttons {
   background: rgba(255, 255, 255, .8);
 }
 
+#top-links {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 14px;
+}
 
+#top-links a {
+  color: #666;
+  text-decoration: none;
+  margin: 0 5px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#top-links a:hover {
+  color: #000;
+  text-decoration: underline;
+}
 
 /* EOF */
