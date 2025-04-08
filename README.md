@@ -4,8 +4,8 @@
 
 A visual design tool that helps create complex shapes and graphics for Processing Python Mode applications by providing a real-time code generator.
 
-- [Try P5paint Online](https://p5paint.example.com) 
-- [GitHub Repository](https://github.com/yourusername/P5paint)
+- [Try P5paint Online](https://derdere.github.io/P5paint/)
+- [GitHub Repository](https://github.com/derDere/P5paint)
 - [License](LICENSE)
 
 ## Purpose
