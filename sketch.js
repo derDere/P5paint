@@ -147,11 +147,15 @@ function draw() {
   }
   
   let lines = [];
+  let useShapeFunction = false;
   for(let po of objList.items()) {
     try {
       push();
       po.paint();
       lines = lines.concat(po.code());
+      if (po.UseShapeFunction) {
+        useShapeFunction = true;
+      }
       pop();
     } catch(err) {
       textAlign(CENTER, CENTER);
@@ -166,8 +170,15 @@ function draw() {
       anchor.draw();
     }
   }
+
+  let newCode = '';
+  if (useShapeFunction) {
+    newCode += GetShapeFunction().join('\n') + '\n';
+  }
+
+  newCode += 'def draw_geometry():\n';
   
-  let newCode = '    ' + lines.join('\n    ');
+  newCode += '    ' + lines.join('\n    ');
   if (newCode != oldCode) {
     codeBox.innerHTML = newCode;
     oldCode = newCode;

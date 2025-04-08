@@ -42,6 +42,20 @@ function fromHexA(h, a) {
   return v;
 }
 
+function GetShapeFunction() {
+  return [
+    'def draw_shape(closed, *points):',
+    '    beginShape()',
+    '    for x, y in points:',
+    '        vertex(x, y)',
+    '    if closed:',
+    '        endShape(CLOSE)',
+    '    else:',
+    '        endShape()',
+    ''
+  ];
+};
+
 function PaintObjectBase(id) {
   this.TypeName = "PaintObject";
   this.id = id;
@@ -805,6 +819,7 @@ function PaintShape(id) {
   
   this.TypeName = "Shape";
   
+  this.UseShapeFunction = false;
   this.Close = true;
   this.Path = this.anchors;
   
@@ -845,20 +860,28 @@ function PaintShape(id) {
     let lines = [
       '# ' + this.id,
       'push()',
-      ...this.applyBaseCode(),
-      'beginShape()'
+      ...this.applyBaseCode()
     ];
-    
-    for (let a of this.anchors) {
-      lines.push('vertex(' + a.p.x + ', ' + a.p.y + ')');
+
+    if (this.UseShapeFunction) {
+      let vl = [];
+      for (let a of this.anchors) {
+        vl.push('(' + a.p.x + ', ' + a.p.y + ')');
+      }
+      lines.push('draw_shape( ' + (this.Close ? 'True' : 'False') + ', ' + vl.join(', ') + ' )');
     }
-    
-    if (this.Close) {
-      lines.push('endShape(CLOSE)');
-    } else {
-      lines.push('endShape()');
+    else {
+      lines.push('beginShape()');
+      for (let a of this.anchors) {
+        lines.push('vertex(' + a.p.x + ', ' + a.p.y + ')');
+      }
+      if (this.Close) {
+        lines.push('endShape(CLOSE)');
+      } else {
+        lines.push('endShape()');
+      }
     }
-    
+
     lines.push('pop()');
     lines.push('');
     
