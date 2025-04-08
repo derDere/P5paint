@@ -8,6 +8,8 @@ A visual design tool that helps create complex shapes and graphics for Processin
 - [GitHub Repository](https://github.com/derDere/P5paint)
 - [License](LICENSE)
 
+Created and maintained by [derDere](https://github.com/derDere/)
+
 ## Purpose
 
 Creating precise shapes and graphics in Processing through code alone can be time-consuming due to the iterative nature of adjusting coordinates and properties. P5paint solves this by providing:
