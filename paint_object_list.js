@@ -26,10 +26,12 @@ function PaintObjectList() {
     }
     return null;
   }.bind(this);
-  
-  this.items = function() {
+
+    this.items = function() {
     let items = Object.values(this.allObjects);
-    items.splice(0, 1);
+    items.splice(0, 1);  // Remove the [ADD] item
+    // Sort items by zIndex
+    items.sort((a, b) => a.zIndex - b.zIndex);
     return items;
   }.bind(this);
   
@@ -72,10 +74,13 @@ function PaintObjectList() {
         return true;
       });
     }
-    
-    this.allObjects[id] = o;
-    
-    if (o) {
+      this.allObjects[id] = o;
+      if (o) {
+      // Set initial zIndex to last position and reorder all indices
+      let items = this.items();
+      o.zIndex = items.length;  // Put at end initially
+      this.reorderZIndices();   // Ensure sequential order
+      
       this.getSelected()?.clearUpdate();
       this.listbox.value = o.id;
       this.selected = o.id;
@@ -99,5 +104,71 @@ function PaintObjectList() {
       }
       //}
     }
+  }.bind(this);
+  this.reorderZIndices = function() {
+    let items = this.items();
+    // Sort by current zIndex
+    items.sort((a, b) => a.zIndex - b.zIndex);
+    // Reassign sequential zIndex values
+    items.forEach((item, index) => {
+      item.zIndex = index;
+    });
+  }.bind(this);
+
+  this.moveUp = function(id) {
+    if (id in this.allObjects) {
+      let items = this.items();
+      let currentIndex = items.findIndex(item => item.id === id);
+      if (currentIndex > 0) {
+        // Swap items
+        let temp = items[currentIndex].zIndex;
+        items[currentIndex].zIndex = items[currentIndex - 1].zIndex;
+        items[currentIndex - 1].zIndex = temp;
+        // Ensure sequential order
+        this.reorderZIndices();
+        // Update listbox order
+        this.updateListboxOrder();
+      }
+    }
+  }.bind(this);
+
+  this.moveDown = function(id) {
+    if (id in this.allObjects) {
+      let items = this.items();
+      let currentIndex = items.findIndex(item => item.id === id);
+      if (currentIndex < items.length - 1) {
+        // Swap items
+        let temp = items[currentIndex].zIndex;
+        items[currentIndex].zIndex = items[currentIndex + 1].zIndex;
+        items[currentIndex + 1].zIndex = temp;
+        // Ensure sequential order
+        this.reorderZIndices();
+        // Update listbox order
+        this.updateListboxOrder();
+      }
+    }
+  }.bind(this);
+
+  this.updateListboxOrder = function() {
+    // Store selected value
+    let selectedValue = this.listbox.value;
+    
+    // Clear all options except [ADD]
+    while (this.listbox.children.length > 1) {
+      this.listbox.removeChild(this.listbox.lastChild);
+    }
+    
+    // Re-add all items in correct order
+    let items = this.items();
+    for (let obj of items) {
+      let opt = document.createElement('option');
+      opt.id = "opt-" + obj.id;
+      opt.innerText = obj.id;
+      opt.value = obj.id;
+      this.listbox.appendChild(opt);
+    }
+    
+    // Restore selection
+    this.listbox.value = selectedValue;
   }.bind(this);
 }

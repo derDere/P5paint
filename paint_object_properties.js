@@ -225,7 +225,54 @@ function PaintObjectProperties() {
   this.table.cellspacing = '0';
   this.table.cellpadding = '0';
   this.div.appendChild(this.table);
-  
+    this.createControlButtons = function(o) {
+    let controlRow = document.createElement('tr');
+    let controlTd = controlRow.appendChild(document.createElement('td'));
+    controlTd.colSpan = 2;
+    controlTd.align = "center";
+    controlTd.style.padding = "5px 0";
+
+    // Visibility toggle button
+    let visibilityBtn = controlTd.appendChild(document.createElement('button'));
+    visibilityBtn.className = "control-btn";
+    visibilityBtn.innerHTML = "👁️";
+    visibilityBtn.title = "Toggle Visibility";
+    visibilityBtn.style.marginRight = "5px";
+
+    // Move up button
+    let moveUpBtn = controlTd.appendChild(document.createElement('button'));    moveUpBtn.className = "control-btn";
+    moveUpBtn.innerHTML = "⬇️";
+    moveUpBtn.title = "Move To Back";
+    moveUpBtn.style.marginRight = "5px";
+    moveUpBtn.addEventListener('click', () => {
+      objList.moveUp(o.id);
+    });
+
+    // Move down button
+    let moveDownBtn = controlTd.appendChild(document.createElement('button'));
+    moveDownBtn.className = "control-btn";
+    moveDownBtn.innerHTML = "⬆️";
+    moveDownBtn.title = "Move To Front";
+    moveDownBtn.style.marginRight = "5px";
+    moveDownBtn.addEventListener('click', () => {
+      objList.moveDown(o.id);
+    });
+
+    // Remove button
+    let removeBtn = controlTd.appendChild(document.createElement('button'));
+    removeBtn.className = "control-btn";
+    removeBtn.innerHTML = "❌";
+    removeBtn.title = "Remove Object";
+    removeBtn.style.color = "red";
+    removeBtn.addEventListener('click', () => {
+      if (confirm('Do you really want to remove "' + o.id + '" ?!')) {
+        objList.remove(o.id);
+      }
+    });
+
+    return controlRow;
+  }.bind(this);
+
   this.setObject = function(o) {
     if (!o) {
       this.table.innerHTML = '<tr><td align="center"><b>Add a new Object</b></td></tr>';
@@ -251,6 +298,7 @@ function PaintObjectProperties() {
     this.table.innerHTML = '';
     
     for(let prop in o) {
+      if (prop == 'zIndex') continue;  // Hide zIndex property, only modified by up/down buttons
       if (o.TypeName == 'Line' && prop == 'fill') continue;
       if (o.TypeName == 'Line' && prop == 'noFill') continue;
       if (o.TypeName == 'Point' && prop == 'fill') continue;
@@ -268,9 +316,9 @@ function PaintObjectProperties() {
         let ttr = document.createElement('tr');
         let ttdName = ttr.appendChild(document.createElement('td'));
         ttdName.className = 'type-name-display';
-        ttdName.colSpan = 2;
-        ttdName.innerText = o[prop];
+        ttdName.colSpan = 2;        ttdName.innerText = o[prop];
         this.table.appendChild(ttr);
+        this.table.appendChild(this.createControlButtons(o));
         continue;
       }
         
@@ -300,24 +348,8 @@ function PaintObjectProperties() {
           tdValue.innerText = typeof o[prop];
           break;
       }
-      
-      this.table.appendChild(tr);
+        this.table.appendChild(tr);
     }
-    
-    let tr = document.createElement('tr');
-    let tdDel = tr.appendChild(document.createElement('td'));
-    tdDel.colSpan = 2;
-    tdDel.align = "center";
-    let delBtn = tdDel.appendChild(document.createElement('button'));
-    delBtn.className = "remove-btn";
-    delBtn.innerText = "Remove";
-    this.table.appendChild(tr);
-    delBtn.addEventListener('click', () =>{
-      if (confirm('Do you really want to remove "' + o.id + '" ?!')) {
-        objList.remove(o.id); 
-      }
-    });
-    
   }.bind(this);
   
   this.setObject(null);

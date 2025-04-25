@@ -157,6 +157,18 @@ button.rm-path-point {
   color: red;
 }
 
+button.control-btn {
+  padding: 2px 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+button.control-btn:hover {
+  background: #f0f0f0;
+}
+
 
 div.path-point-list {
   position: relative;

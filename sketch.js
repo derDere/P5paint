@@ -63,10 +63,11 @@ function setup() {
     URL.revokeObjectURL(url);
   });
   saveBtn.parent('menu');
-  
+
   loadBtn = createButton('📂');
   loadBtn.mousePressed(() => {
-    if (confirm('Did you save?!')) {
+    // Only show save confirmation if there are objects in the scene
+    if (objList.items().length === 0 || confirm('Did you save?!')) {
       let i = document.createElement('input');
       i.type = 'file';
       i.accept = '.json,application/json';

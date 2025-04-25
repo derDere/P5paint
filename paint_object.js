@@ -107,6 +107,7 @@ function PaintObjectBase(id) {
   this.strokeCap = 'ROUND';
   this.strokeJoin = 'MITER';
   this.smooth = true;
+  this.zIndex = 0;  // Add zIndex property
   
   this.createBaseJJ = function() {
     return {
@@ -125,6 +126,7 @@ function PaintObjectBase(id) {
       'strokeCap': this.strokeCap,
       'strokeJoin': this.strokeJoin,
       'smooth': this.smooth,
+      'zIndex': this.zIndex,  // Add zIndex to JSON
     };
   }.bind(this);
   
@@ -902,56 +904,3 @@ const PaintObjectTypes = {
   "Square": PaintSquare,
   "Shape": PaintShape
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// EOF
