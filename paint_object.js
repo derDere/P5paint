@@ -108,6 +108,7 @@ function PaintObjectBase(id) {
   this.strokeJoin = 'MITER';
   this.smooth = true;
   this.zIndex = 0;  // Add zIndex property
+  this.visibility = 0; // 0 = visible, 1 = outlined, 2 = hidden
   
   this.createBaseJJ = function() {
     return {
@@ -126,7 +127,7 @@ function PaintObjectBase(id) {
       'strokeCap': this.strokeCap,
       'strokeJoin': this.strokeJoin,
       'smooth': this.smooth,
-      'zIndex': this.zIndex,  // Add zIndex to JSON
+      'zIndex': this.zIndex,
     };
   }.bind(this);
   
@@ -161,6 +162,18 @@ function PaintObjectBase(id) {
       noStroke();
     } else {
       stroke(toColor(this.stroke));
+    }
+    if (this.visibility >= 1) {
+      noFill();
+      if (this.visibility == 2) {
+        noStroke();
+      } else {
+        stroke(0);
+        strokeWeight(1);
+        drawingContext.setLineDash([5, 5]);   
+      }
+    } else {
+      drawingContext.setLineDash([]);   
     }
     strokeWeight(this.strokeWeight);
     switch(this.strokeCap) {

@@ -225,7 +225,8 @@ function PaintObjectProperties() {
   this.table.cellspacing = '0';
   this.table.cellpadding = '0';
   this.div.appendChild(this.table);
-    this.createControlButtons = function(o) {
+  
+  this.createControlButtons = function(o) {
     let controlRow = document.createElement('tr');
     let controlTd = controlRow.appendChild(document.createElement('td'));
     controlTd.colSpan = 2;
@@ -238,6 +239,13 @@ function PaintObjectProperties() {
     visibilityBtn.innerHTML = "👁️";
     visibilityBtn.title = "Toggle Visibility";
     visibilityBtn.style.marginRight = "5px";
+    visibilityBtn.addEventListener('click', () => {
+      o.visibility = (o.visibility + 1) % 3;
+      let ICON1 = "👁️"; // Visible
+      let ICON2 = "👁️‍🗨️"; // Semi-Transparent
+      let ICON3 = "🚫"; // Hidden
+      visibilityBtn.innerHTML = [ICON1, ICON2, ICON3][o.visibility];
+    });
 
     // Move up button
     let moveUpBtn = controlTd.appendChild(document.createElement('button'));    moveUpBtn.className = "control-btn";
@@ -298,7 +306,7 @@ function PaintObjectProperties() {
     this.table.innerHTML = '';
     
     for(let prop in o) {
-      if (prop == 'zIndex') continue;  // Hide zIndex property, only modified by up/down buttons
+      if (prop == 'zIndex' || prop == 'visibility') continue;  // Hide zIndex and visibility property
       if (o.TypeName == 'Line' && prop == 'fill') continue;
       if (o.TypeName == 'Line' && prop == 'noFill') continue;
       if (o.TypeName == 'Point' && prop == 'fill') continue;
