@@ -26,9 +26,10 @@ function PaintAnchor(x, y, c) {
   }.bind(this);
   
   this.loop = function() {
-    let mp = createVector(mouseX, mouseY)
+    let mp = createVector(mouseX, mouseY);
     mp.sub(width / 2, height / 2)
     mp.div(zoomSlider.value());
+    mp.sub(viewPanningX, viewPanningY);
     let d = this.p.dist(mp) * zoomSlider.value();
     if (d <= PAINT_ANCHOR_R) {
       this.hover = true;
@@ -36,7 +37,7 @@ function PaintAnchor(x, y, c) {
       this.hover = false;
     }
     if (this.hover || this.active) {
-      if (mouseIsPressed && (draggingAnchor == null || draggingAnchor == this.id)) {
+      if ((mouseIsPressed && mouseButton == LEFT) && (draggingAnchor == null || draggingAnchor == this.id)) {
         draggingAnchor = this.id
         this.active = true;
         if (this.originOff == null) {
@@ -69,7 +70,7 @@ function PaintAnchor(x, y, c) {
     } else {
       fill(this.c);
     }
-    circle(this.p.x * zoomSlider.value(), this.p.y * zoomSlider.value(), PAINT_ANCHOR_R * 2);
+    circle((this.p.x + viewPanningX) * zoomSlider.value(), (this.p.y + viewPanningY) * zoomSlider.value(), PAINT_ANCHOR_R * 2);
     pop();
   }.bind(this);
 }

@@ -12,6 +12,13 @@ var loadBtn;
 var oldCode = '';
 var eleNum = 1;
 
+var viewPanningX = 0;
+var viewPanningY = 0;
+var viewPanningMovementMouseX = 0;
+var viewPanningMovementMouseY = 0;
+var viewPanningMovement = false;
+var viewPanningCenterBtn;
+
 function copyCode() {
   const textarea = document.getElementById("code-content");
 
@@ -37,7 +44,12 @@ function copyCode() {
 
 
 function setup() {
-  createCanvas(600, 600);
+  let can = createCanvas(600, 600);
+  can.canvas.addEventListener('mousedown', (e) => {
+    if (e.button == 1) { // Middle mouse button
+      e.preventDefault();
+    }
+  });
   
   codeBox = document.getElementById('code-content');
   
@@ -91,6 +103,8 @@ function setup() {
               objList.add(oo);
             }
           }
+          viewPanningX = 0;
+          viewPanningY = 0;
         };
         reader.readAsText(file);
       };
@@ -114,21 +128,42 @@ function setup() {
   zoomReset = createButton('100%');
   zoomReset.mousePressed(() => zoomSlider.value(1));
   zoomReset.parent('menu');
+
+  viewPanningCenterBtn = createButton('Center View');
+  viewPanningCenterBtn.mousePressed(() => {
+    viewPanningX = 0;
+    viewPanningY = 0;
+  });
+  viewPanningCenterBtn.parent('menu');
   
   bgColorPicker = createColorPicker('white');
   bgColorPicker.parent('menu');
 }
 
 function draw() {
+
+  if (mouseIsPressed && mouseButton == CENTER) {
+    if (viewPanningMovement) { 
+      viewPanningX = ((mouseX / zoomSlider.value()) - viewPanningMovementMouseX);
+      viewPanningY = ((mouseY / zoomSlider.value()) - viewPanningMovementMouseY);
+    } else {
+      viewPanningMovement = true;
+      viewPanningMovementMouseX = (mouseX / zoomSlider.value()) - viewPanningX;
+      viewPanningMovementMouseY = (mouseY / zoomSlider.value()) - viewPanningY;
+    }
+  } else {
+    viewPanningMovement = false;
+    viewPanningMovementMouseX = 0;
+    viewPanningMovementMouseY = 0;
+  }
+
   let bgc = color('' + bgColorPicker.value());
   background(bgc);
   translate(width / 2, height / 2);
   
-  push();
-  scale(zoomSlider.value());
-  
   if (drawGridCb.checked()) {
     push();
+    scale(zoomSlider.value());
     noStroke();
     fill(255 - red(bgc), 255 - green(bgc), 255 - blue(bgc), 24);
     for(let x = -600; x < 600; x += 10) {
@@ -140,6 +175,10 @@ function draw() {
     }
     pop();
   }
+
+  push();
+  scale(zoomSlider.value());
+  translate(viewPanningX, viewPanningY);
   
   if (objList?.getSelected()?.anchors) {
     for(let anchor of objList.getSelected().anchors) {
@@ -187,10 +226,13 @@ function draw() {
   
   if (drawCenterCb.checked()) {
     push();
+    translate(viewPanningX * zoomSlider.value(), viewPanningY * zoomSlider.value());
     stroke(255, 0, 0, 128);
     noFill();
     line(0, -50, 0, 50);
     line(-50, 0, 50, 0);
+    stroke(0, 255, 0, 128);
+    line(-viewPanningX * zoomSlider.value(), -viewPanningY * zoomSlider.value(), 0, 0);
     pop();
   }
 }
