@@ -134,7 +134,8 @@ function PaintObjectBase(id) {
   this.loadJJ = function(jj) {
     for(let key in jj) {
       if (key == 'Path') {
-        this.anchors = [];
+        // clear the anchors withour changing reference
+        this.anchors.splice(0, this.anchors.length);
         for (let xy of jj[key]) {
           let [x, y] = xy;
           this.anchors.push(new PaintAnchor(x, y, 'white'));

@@ -74,8 +74,8 @@ function PaintObjectList() {
         return true;
       });
     }
-      this.allObjects[id] = o;
-      if (o) {
+    this.allObjects[id] = o;
+    if (o) {
       // Set initial zIndex to last position and reorder all indices
       let items = this.items();
       o.zIndex = items.length;  // Put at end initially

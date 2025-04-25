@@ -96,6 +96,7 @@ function setup() {
             if (key == NONE_ITM) continue;
             objList.remove(key);
           }
+          jo.sort((a, b) => a.zIndex - b.zIndex);
           for (let itm of jo) {
             if (itm.TypeName in PaintObjectTypes) {
               let oo = new PaintObjectTypes[itm.TypeName]();
