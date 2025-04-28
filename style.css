@@ -203,4 +203,105 @@ div.path-list-buttons {
   text-decoration: underline;
 }
 
+#fc-44418 {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+#datenschutz-toggle {
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  background: #fff;
+
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 1px solid #CCD1D9;
+  display: inline-block;
+  height: 15px;
+  line-height: 15px;
+  margin: 0;
+  padding: 0;
+
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+#datenschutz-toggle > span {
+  display: inline-block;
+  height: 11px;
+  line-height: 11px;
+  vertical-align: top;
+  font-size: 7px;
+  text-transform: uppercase;
+  color: #fff;
+  background: #CCD1D9;
+  border: 0 none;
+  margin: 1px;
+  padding: 0 6px 0 0;
+}
+
+#datenschutz-toggle > span::before {
+  display: inline-block;
+  content: '?';
+  font-size: 7px;
+  color: #CCD1D9;
+  background: #fff;
+  height: 11px;
+  width: 12px;
+  line-height: 11px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 10px;
+  margin: 0 6px 0 0;
+  padding: 0;
+}
+
+#datenschutz-toggle:hover {
+  border: 1px solid #888a8d;
+}
+#datenschutz-toggle:hover > span {
+  background: #888a8d;
+}
+#datenschutz-toggle:hover > span::before {
+  color: #888a8d;
+}
+
+#datenschutz-toggle:active {
+  border: 1px solid #becbe0;
+}
+#datenschutz-toggle:active > span {
+  background: #becbe0;
+}
+#datenschutz-toggle:active > span::before {
+  color: #becbe0;
+}
+
+#datenschutz {
+  position: absolute;
+  top: 50px;
+  left: 20px;
+  width: 400px;
+  font-size: 16px;
+  background-color: #fff;
+  padding: 20px 30px;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1), 
+              0 0 20px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+  z-index: 1000;
+  text-align: justify;
+}
+
+#datenschutz h2 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.hidden {
+  display: none;
+}
+
 /* EOF */
