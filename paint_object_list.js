@@ -51,6 +51,19 @@ function PaintObjectList() {
   this.addSelectedHandler = function(callback) {
     this.selectedHandler.push(callback);
   };
+
+  this.handleNewId = function(oid, nid) {
+    if (nid in this.allObjects) return false;
+    let o = this.allObjects[oid];
+    let eleId = "opt-" + oid;
+    let opt = document.getElementById(eleId);
+    this.allObjects[nid] = o;
+    delete this.allObjects[oid];
+    opt.id = "opt-" + nid;
+    opt.innerText = nid;
+    opt.value = nid;
+    return true;
+  }.bind(this);
   
   this.add = function(o) {
     let id;
@@ -64,15 +77,7 @@ function PaintObjectList() {
     this.listbox.appendChild(opt);
     
     if (o) {
-      o.newId((oid,nid, o) => {
-        if (nid in this.allObjects) return false;
-        this.allObjects[nid] = o;
-        delete this.allObjects[oid];
-        opt.id = "opt-" + nid;
-        opt.innerText = nid;
-        opt.value = nid;
-        return true;
-      });
+      o.newId(this.handleNewId);
     }
     this.allObjects[id] = o;
     if (o) {
