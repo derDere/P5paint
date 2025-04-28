@@ -1,5 +1,6 @@
 var objList;
 var objProps;
+var anchorSelector;
 var drawCenterCb;
 var drawGridCb;
 var zoomSlider;
@@ -60,6 +61,8 @@ function setup() {
   objList = new PaintObjectList();
   
   objProps = new PaintObjectProperties();
+
+  anchorSelector = new PaintAnchorSelection();
   
   objList.addSelectedHandler(objProps.setObject);
   
@@ -158,6 +161,8 @@ function draw() {
     viewPanningMovementMouseY = 0;
   }
 
+  anchorSelector.update(objList?.getSelected());
+
   let bgc = color('' + bgColorPicker.value());
   background(bgc);
   translate(width / 2, height / 2);
@@ -212,6 +217,8 @@ function draw() {
     }
   }
 
+  anchorSelector.draw();
+
   let newCode = '';
   if (useShapeFunction) {
     newCode += GetShapeFunction().join('\n') + '\n';
@@ -228,6 +235,8 @@ function draw() {
   if (drawCenterCb.checked()) {
     push();
     translate(viewPanningX * zoomSlider.value(), viewPanningY * zoomSlider.value());
+    strokeWeight(3);
+    strokeCap(ROUND);
     stroke(255, 0, 0, 128);
     noFill();
     line(0, -50, 0, 50);
