@@ -43,6 +43,31 @@ function copyCode() {
   textarea.blur();
 }
 
+function PointRealToView(x, y) {
+  if (x instanceof p5.Vector) {
+    let v = x;
+    x = v.x;
+    y = v.y;
+  }
+  let p = createVector(x, y);
+  p.sub(width / 2, height / 2)
+  p.div(zoomSlider.value());
+  p.sub(viewPanningX, viewPanningY);
+  return p;
+}
+
+function PointViewToReal(x, y) {
+  if (x instanceof p5.Vector) {
+    let v = x;
+    x = v.x;
+    y = v.y;
+  }
+  let p = createVector(x, y);
+  p.add(viewPanningX, viewPanningY);
+  p.mult(zoomSlider.value());
+  p.add(width / 2, height / 2);
+  return p;
+}
 
 function setup() {
   let can = createCanvas(600, 600);
@@ -165,6 +190,7 @@ function draw() {
 
   let bgc = color('' + bgColorPicker.value());
   background(bgc);
+  push();
   translate(width / 2, height / 2);
   
   if (drawGridCb.checked()) {
@@ -209,8 +235,9 @@ function draw() {
       lines = lines.concat([ '', '# ' + po.id, '# Error: ' + err.message, '' ]);
     }
   }
-  
   pop();
+  pop();
+  
   if (objList?.getSelected()?.anchors) {
     for(let anchor of objList.getSelected().anchors) {
       anchor.draw();
@@ -234,6 +261,7 @@ function draw() {
   
   if (drawCenterCb.checked()) {
     push();
+    translate(width / 2, height / 2);
     translate(viewPanningX * zoomSlider.value(), viewPanningY * zoomSlider.value());
     strokeWeight(3);
     strokeCap(ROUND);

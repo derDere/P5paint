@@ -32,10 +32,7 @@ function PaintAnchor(x, y, c) {
     if (anchorSelector.isSelecting()) {
       return;
     }
-    let mp = createVector(mouseX, mouseY);
-    mp.sub(width / 2, height / 2)
-    mp.div(zoomSlider.value());
-    mp.sub(viewPanningX, viewPanningY);
+    let mp = PointRealToView(mouseX, mouseY);
     let d = this.p.dist(mp) * zoomSlider.value();
     if (d <= PAINT_ANCHOR_R) {
       this.hover = true;
@@ -76,7 +73,8 @@ function PaintAnchor(x, y, c) {
     } else {
       fill(this.c);
     }
-    circle((this.p.x + viewPanningX) * zoomSlider.value(), (this.p.y + viewPanningY) * zoomSlider.value(), PAINT_ANCHOR_R * 2);
+    let readP = PointViewToReal(this.p)
+    circle(readP.x, readP.y, PAINT_ANCHOR_R * 2);
     if (this.inSelection || this.isSelected) {
       if (this.isSelected) {
         noFill();
@@ -89,7 +87,7 @@ function PaintAnchor(x, y, c) {
         drawingContext.setLineDash([3, 3]);
         strokeWeight(2);
       }
-      circle((this.p.x + viewPanningX) * zoomSlider.value(), (this.p.y + viewPanningY) * zoomSlider.value(), (PAINT_ANCHOR_R * 2) + 4);
+      circle(readP.x, readP.y, (PAINT_ANCHOR_R * 2) + 4);
     }
     drawingContext.setLineDash([]);
     pop();
@@ -135,17 +133,11 @@ function PaintAnchorSelection() {
     if (mouseIsPressed && mouseButton == LEFT) {
       if (!this.isDragging) {
         if (!isOverAnchor) {
-          this.start = createVector(mouseX, mouseY);
-          this.start.sub(width / 2, height / 2)
-          this.start.div(zoomSlider.value());
-          this.start.sub(viewPanningX, viewPanningY);
+          this.start = PointRealToView(mouseX, mouseY);
           this.isDragging = true;
         }
       } else {
-        this.end = createVector(mouseX, mouseY);
-        this.end.sub(width / 2, height / 2)
-        this.end.div(zoomSlider.value());
-        this.end.sub(viewPanningX, viewPanningY);
+        this.end = PointRealToView(mouseX, mouseY);
       }
       if (selectedObject) {
         for(let anchor of selectedObject?.anchors) {
@@ -205,8 +197,9 @@ function PaintAnchorSelection() {
       let w = round(abs(this.start.x - this.end.x));
       let h = round(abs(this.start.y - this.end.y));
 
-      x = (x + viewPanningX) * zoomSlider.value();
-      y = (y + viewPanningY) * zoomSlider.value();
+      let xy = PointViewToReal(x, y);
+      x = xy.x;
+      y = xy.y;
       w = w * zoomSlider.value();
       h = h * zoomSlider.value();
       rect(x, y, w, h);
@@ -221,6 +214,11 @@ function PaintAnchorSelection() {
 
 function PaintAnchorGroup() {
   this.anchors = [];
+  this.isRotating = false;
+  this.isMoving = false;
+  this.startRotation = 0;
+  this.startCenter = null;
+  this.startMove = 0;
 
   this.getBounds = function() {
     if (this.anchors.length <= 0) {
@@ -231,20 +229,33 @@ function PaintAnchorGroup() {
     let y = min(this.anchors.map(a => a.p.y));
     let w = max(this.anchors.map(a => a.p.x)) - x;
     let h = max(this.anchors.map(a => a.p.y)) - y;
-    x = (x + viewPanningX) * zoomSlider.value();
-    y = (y + viewPanningY) * zoomSlider.value();
-    w = w * zoomSlider.value();
-    h = h * zoomSlider.value();
 
-    x = round(x - 20);
-    y = round(y - 20);
-    w = round(w + 40);
-    h = round(h + 40);
+    x = round(x - (20 / zoomSlider.value()));
+    y = round(y - (20 / zoomSlider.value()));
+    w = round(w + (40 / zoomSlider.value()));
+    h = round(h + (40 / zoomSlider.value()));
 
     return { x: x, y: y, w: w, h: h };
   }.bind(this);
 
+  this.getCenter = function() {
+    if (this.anchors.length <= 0) {
+      return null;
+    }
+    let bounds = this.getBounds();
+    if (bounds == null) {
+      return null;
+    }
+    let { x, y, w, h } = bounds;
+    return createVector(x + w / 2, y + h / 2);
+  }.bind(this);
+
   this.containsPoint = function(p, margin_top=0, margin_right=0, margin_bottom=0, margin_left=0) {
+    margin_top /= zoomSlider.value();
+    margin_right /= zoomSlider.value();
+    margin_bottom /= zoomSlider.value();
+    margin_left /= zoomSlider.value();
+
     if (this.anchors.length <= 0) {
       return false;
     }
@@ -258,12 +269,44 @@ function PaintAnchorGroup() {
   }.bind(this);
 
   this.handleReset = function() {
-    
+    if (!mouseIsPressed || mouseButton != LEFT) {
+      this.isRotating = false;
+      this.isMoving = false;
+      this.startRotation = 0;
+      this.startMove = 0;
+      this.startCenter = null;
+      return true;
+    }
+    return false;
   }.bind(this);
 
   this.handleRotation = function() {
     if (this.handleReset()) return;
+    
+    let mp = PointRealToView(mouseX, mouseY);
+    let center = this.startCenter ?? this.getCenter();
+    mp.sub(center.x, center.y);
 
+    // if (mp.mag() < 20) return;
+
+    let angle = mp.heading();
+
+    if (!this.isRotating) {
+      this.startRotation = angle;
+      this.isRotating = true;
+      this.startCenter = center.copy();
+    }
+    else {
+      let delta = angle - this.startRotation;
+      this.startRotation = angle;
+      for(let anchor of this.anchors) {
+        let p = anchor.p.copy();
+        p.sub(center);
+        p.rotate(delta);
+        anchor.p = p.copy();
+        anchor.p.add(center);
+      }
+    }
   }.bind(this);
 
   this.handleMove = function() {
@@ -281,10 +324,7 @@ function PaintAnchorGroup() {
       return false;
     }
 
-    let mp = createVector(mouseX, mouseY);
-    mp.sub(width / 2, height / 2)
-    mp.div(zoomSlider.value());
-    mp.sub(viewPanningX, viewPanningY);
+    let mp = PointRealToView(mouseX, mouseY);
 
     let bounds = this.getBounds();
     if (bounds == null) {
@@ -292,16 +332,16 @@ function PaintAnchorGroup() {
     }
     let { x, y, w, h } = bounds;
 
-    let inRotationArea = this.containsPoint(mp, -12, -12, -12, -12);
-    let inActionArea = this.containsPoint(mp, -2, -2, -2, -2);
+    let inRotationArea = this.containsPoint(mp, -30, -30, -30, -30);
+    let inActionArea = this.containsPoint(mp, -5, -5, -5, -5);
     let inMoveArea = this.containsPoint(mp, 10, 10, 10, 10);
 
-    if (inRotationArea) {
-      if (inActionArea && !inMoveArea) { // mouse is on border
-        let topSide = this.containsPoint(mp, -2, -2, h - 10, -2);
-        let bottomSide = this.containsPoint(mp, h - 10, -2, -2, -2);
-        let leftSide = this.containsPoint(mp, -2, w -10, -2, -2);
-        let rightSide = this.containsPoint(mp, -2, -2, -2, w - 10);
+    if (inRotationArea || this.isRotating) {
+      if ((inActionArea && !inMoveArea) && !this.isRotating) { // mouse is on border
+        let topSide = this.containsPoint(mp, -2, -2, (h * zoomSlider.value()) - 10, -2);
+        let bottomSide = this.containsPoint(mp, (h * zoomSlider.value()) - 10, -2, -2, -2);
+        let leftSide = this.containsPoint(mp, -2, (w * zoomSlider.value()) -10, -2, -2);
+        let rightSide = this.containsPoint(mp, -2, -2, -2, (w * zoomSlider.value()) - 10);
 
         if (topSide && leftSide) {
           cursor('nwse-resize');
@@ -328,12 +368,12 @@ function PaintAnchorGroup() {
           cursor('ew-resize');
           this.handleResize(false, false, false, true, false, false, false, false);
         }
-      } else if (inMoveArea) { // mouse is in move area
+      } else if (inMoveArea && !this.isRotating) { // mouse is in move area
         cursor('move');
         this.handleMove();
       } else {
         // in rotation area but not in action area or move area
-        cursor('pointer');
+        cursor('arrow_circle_225.png');
         this.handleRotation();
       }
 
@@ -357,12 +397,23 @@ function PaintAnchorGroup() {
     }
     let { x, y, w, h } = bounds;
 
+    let pos = PointViewToReal(x, y);
+    x = pos.x;
+    y = pos.y;
+    w = w * zoomSlider.value();
+    h = h * zoomSlider.value();
+
     push();
     noFill();
     stroke('rgba(0, 127, 255, 0.5)');
     strokeWeight(3);
-
     rect(x, y, w, h);
+
+    if (this.isRotating && this.startCenter != null) {
+      let mp = createVector(mouseX, mouseY);
+      let center = PointViewToReal(this.startCenter);
+      line(center.x, center.y, mp.x + 8, mp.y + 8);
+    }
     pop();
   }.bind(this);
 }
