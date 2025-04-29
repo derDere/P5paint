@@ -81,18 +81,53 @@ function createAnchorListControl(o, prop) {
   
   this.addPoint = function() {
     let x, y;
-    if (!(this.getLastAnchor())) {
-      x = 150;
-      y = 0;
+    // Find selected anchors
+    let selectedAnchors = this.o.anchors.filter(a => a.isSelected);
+    
+    if (selectedAnchors.length === 2) {
+      // If exactly two anchors are selected, add a point between them
+      let p1 = selectedAnchors[0].p;
+      let p2 = selectedAnchors[1].p;
+      // Calculate midpoint between the two selected anchors
+      x = round((p1.x + p2.x) / 2, 3);
+      y = round((p1.y + p2.y) / 2, 3);
+      
+      // Find the index of the second anchor
+      let secondAnchorIndex = this.o.anchors.indexOf(selectedAnchors[1]);
+      
+      // Create new anchor
+      let na = new PaintAnchor(x, y, 'white');
+      
+      // Insert the new anchor before the second selected anchor
+      this.o.anchors.splice(secondAnchorIndex, 0, na);
+      
+      // Clear selections
+      for (let a of this.o.anchors) {
+        a.isSelected = false;
+      }
     } else {
-      let np = this.getLastAnchor().p.copy();
-      np.rotate(0.2);
-      x = round(np.x, 3);
-      y = round(np.y, 3);
+      // Default behavior: add at the end with rotation
+      if (!(this.getLastAnchor())) {
+        x = 150;
+        y = 0;
+      } else {
+        let np = this.getLastAnchor().p.copy();
+        np.rotate(0.2);
+        x = round(np.x, 3);
+        y = round(np.y, 3);
+      }
+      
+      let na = new PaintAnchor(x, y, 'white');
+      this.o.anchors.push(na);
     }
-    let na = new PaintAnchor(x, y, 'white');
-    this.o.anchors.push(na);
-    this.addAnchorRow(na);
+    
+    // Refresh the table to show anchors in correct order
+    while (this.table.firstChild) {
+      this.table.removeChild(this.table.firstChild);
+    }
+    for (let a of this.o.anchors) {
+      this.addAnchorRow(a);
+    }
   }.bind(this);
   this.addBtn.addEventListener('click', this.addPoint);
   
