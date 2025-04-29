@@ -27,6 +27,12 @@ function PaintAnchor(x, y, c) {
   this.onMove = function(cb) {
     this.moveHandlers.push(cb);
   }.bind(this);
+
+  this.triggerMoveHandlers = function() {
+    for(let cb of this.moveHandlers) {
+      cb(this.p.x, this.p.y);
+    }
+  }.bind(this);
   
   this.loop = function() {
     if (anchorSelector.isSelecting()) {
@@ -51,9 +57,7 @@ function PaintAnchor(x, y, c) {
           this.p.sub(this.originOff);
           this.p.x = round(this.p.x, 3)
           this.p.y = round(this.p.y, 3)
-          for(let cb of this.moveHandlers) {
-            cb(this.p.x, this.p.y);
-          }
+          this.triggerMoveHandlers();
         }
       } else {
         draggingAnchor = null;
@@ -98,10 +102,11 @@ function PaintAnchorSelection() {
   this.start = null;
   this.end = null;
   this.isDragging = false;
+  this.isBusy = false;
   this.selection = new PaintAnchorGroup();
 
   this.isSelecting = function() {
-    return this.start != null && this.end != null;
+    return (this.start != null && this.end != null) || this.isDragging || this.isBusy;
   }.bind(this);
 
   this.containsPoint = function(p) {
@@ -118,8 +123,10 @@ function PaintAnchorSelection() {
   this.update = function(selectedObject) {
     
     if (this.selection.update()) {
+      this.isBusy = true;
       return;
     }
+    this.isBusy = false;
 
     let isOverAnchor = false;
     if (selectedObject) {
@@ -305,6 +312,7 @@ function PaintAnchorGroup() {
         p.rotate(delta);
         anchor.p = p.copy();
         anchor.p.add(center);
+        anchor.triggerMoveHandlers();
       }
     }
   }.bind(this);
@@ -312,6 +320,20 @@ function PaintAnchorGroup() {
   this.handleMove = function() {
     if (this.handleReset()) return;
 
+    let mp = PointRealToView(mouseX, mouseY);
+
+    if (!this.isMoving) {
+      this.startMove = mp.copy();
+      this.isMoving = true;
+    } else {
+      let delta = p5.Vector.sub(mp, this.startMove);
+      this.startMove = mp.copy();
+      
+      for(let anchor of this.anchors) {
+        anchor.p.add(delta);
+        anchor.triggerMoveHandlers();
+      }
+    }
   }.bind(this);
 
   this.handleResize = function(topLeft, top, topRight, left, right, bottomLeft, bottom, bottomRight) {
@@ -336,8 +358,8 @@ function PaintAnchorGroup() {
     let inActionArea = this.containsPoint(mp, -5, -5, -5, -5);
     let inMoveArea = this.containsPoint(mp, 10, 10, 10, 10);
 
-    if (inRotationArea || this.isRotating) {
-      if ((inActionArea && !inMoveArea) && !this.isRotating) { // mouse is on border
+    if (inRotationArea || this.isRotating || this.isMoving) {
+      if ((inActionArea && !inMoveArea) && !this.isRotating && !this.isMoving) { // mouse is on border
         let topSide = this.containsPoint(mp, -2, -2, (h * zoomSlider.value()) - 10, -2);
         let bottomSide = this.containsPoint(mp, (h * zoomSlider.value()) - 10, -2, -2, -2);
         let leftSide = this.containsPoint(mp, -2, (w * zoomSlider.value()) -10, -2, -2);
@@ -368,12 +390,12 @@ function PaintAnchorGroup() {
           cursor('ew-resize');
           this.handleResize(false, false, false, true, false, false, false, false);
         }
-      } else if (inMoveArea && !this.isRotating) { // mouse is in move area
+      } else if ((inMoveArea || this.isMoving) && !this.isRotating) { // mouse is in move area
         cursor('move');
         this.handleMove();
       } else {
         // in rotation area but not in action area or move area
-        cursor('arrow_circle_225.png');
+        cursor('rotation_cursor.png');
         this.handleRotation();
       }
 
@@ -412,7 +434,7 @@ function PaintAnchorGroup() {
     if (this.isRotating && this.startCenter != null) {
       let mp = createVector(mouseX, mouseY);
       let center = PointViewToReal(this.startCenter);
-      line(center.x, center.y, mp.x + 8, mp.y + 8);
+      line(center.x, center.y, mp.x, mp.y);
     }
     pop();
   }.bind(this);
