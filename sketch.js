@@ -77,6 +77,15 @@ function setup() {
     }
   });
   
+  // Add beforeunload event handler
+  window.addEventListener('beforeunload', (e) => {
+    if (objList.items().length > 0) {
+      e.preventDefault();
+      e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+      return e.returnValue;
+    }
+  });
+
   codeBox = document.getElementById('code-content');
   
   copyCodeBtn = createButton('Copy');
