@@ -223,9 +223,15 @@ function PaintAnchorGroup() {
   this.anchors = [];
   this.isRotating = false;
   this.isMoving = false;
+  this.isResizing = false;
   this.startRotation = 0;
   this.startCenter = null;
   this.startMove = 0;
+  this.startResize = 0;
+  this.topSide = false;
+  this.bottomSide = false;
+  this.leftSide = false;
+  this.rightSide = false;
 
   this.getBounds = function() {
     if (this.anchors.length <= 0) {
@@ -279,9 +285,15 @@ function PaintAnchorGroup() {
     if (!mouseIsPressed || mouseButton != LEFT) {
       this.isRotating = false;
       this.isMoving = false;
+      this.isResizing = false;
       this.startRotation = 0;
       this.startMove = 0;
+      this.startResize = 0;
       this.startCenter = null;
+      this.topSide = false;
+      this.bottomSide = false;
+      this.leftSide = false;
+      this.rightSide = false;
       return true;
     }
     return false;
@@ -339,6 +351,123 @@ function PaintAnchorGroup() {
   this.handleResize = function(topLeft, top, topRight, left, right, bottomLeft, bottom, bottomRight) {
     if (this.handleReset()) return;
 
+    let mp = PointRealToView(mouseX, mouseY);
+    let bounds = this.getBounds();
+    if (bounds == null) return;
+
+    if (!this.isResizing) {
+      this.isResizing = true;
+      this.originalBounds = { ...bounds };
+      this.originalAspectRatio = bounds.w / bounds.h;
+      
+      // Store the fixed point (opposite corner/side) as our resize reference
+      if (topLeft) {
+        this.startResize = createVector(bounds.x + bounds.w, bounds.y + bounds.h);
+      } else if (topRight) {
+        this.startResize = createVector(bounds.x, bounds.y + bounds.h);
+      } else if (bottomLeft) {
+        this.startResize = createVector(bounds.x + bounds.w, bounds.y);
+      } else if (bottomRight) {
+        this.startResize = createVector(bounds.x, bounds.y);
+      } else if (top) {
+        this.startResize = createVector(bounds.x, bounds.y + bounds.h);
+      } else if (bottom) {
+        this.startResize = createVector(bounds.x, bounds.y);
+      } else if (left) {
+        this.startResize = createVector(bounds.x + bounds.w, bounds.y);
+      } else if (right) {
+        this.startResize = createVector(bounds.x, bounds.y);
+      }
+      
+      // Store original relative positions of all anchors
+      for (let anchor of this.anchors) {
+        anchor.relativePos = {
+          x: (anchor.p.x - bounds.x) / bounds.w,
+          y: (anchor.p.y - bounds.y) / bounds.h
+        };
+      }
+    }
+
+    // Calculate new bounds based on current mouse position relative to the fixed point
+    let newBounds = { ...this.originalBounds }; // Start with original bounds
+    
+    if (topLeft) {
+      newBounds.w = this.startResize.x - mp.x;
+      newBounds.h = this.startResize.y - mp.y;
+      newBounds.x = this.startResize.x - newBounds.w;
+      newBounds.y = this.startResize.y - newBounds.h;
+    } else if (topRight) {
+      newBounds.w = mp.x - this.startResize.x;
+      newBounds.h = this.startResize.y - mp.y;
+      newBounds.x = this.startResize.x;
+      newBounds.y = this.startResize.y - newBounds.h;
+    } else if (bottomLeft) {
+      newBounds.w = this.startResize.x - mp.x;
+      newBounds.h = mp.y - this.startResize.y;
+      newBounds.x = this.startResize.x - newBounds.w;
+      newBounds.y = this.startResize.y;
+    } else if (bottomRight) {
+      newBounds.w = mp.x - this.startResize.x;
+      newBounds.h = mp.y - this.startResize.y;
+      newBounds.x = this.startResize.x;
+      newBounds.y = this.startResize.y;
+    } else if (top) {
+      newBounds.h = this.startResize.y - mp.y;
+      newBounds.y = this.startResize.y - newBounds.h;
+    } else if (bottom) {
+      newBounds.h = mp.y - this.startResize.y;
+      newBounds.y = this.startResize.y;
+    } else if (left) {
+      newBounds.w = this.startResize.x - mp.x;
+      newBounds.x = this.startResize.x - newBounds.w;
+    } else if (right) {
+      newBounds.w = mp.x - this.startResize.x;
+      newBounds.x = this.startResize.x;
+    }
+
+    // If CTRL is held, maintain aspect ratio
+    if (keyIsDown(CONTROL)) {
+      if (top || bottom) {
+        // Adjust width based on height change
+        let centerX = this.startResize.x + (newBounds.w / 2);
+        newBounds.w = newBounds.h * this.originalAspectRatio;
+        newBounds.x = centerX - (newBounds.w / 2);
+      } else if (left || right) {
+        // Adjust height based on width change
+        let centerY = this.startResize.y + (newBounds.h / 2);
+        newBounds.h = newBounds.w / this.originalAspectRatio;
+        newBounds.y = centerY - (newBounds.h / 2);
+      } else {
+        // Corner resize - preserve aspect ratio based on the larger change
+        let scaleX = newBounds.w / this.originalBounds.w;
+        let scaleY = newBounds.h / this.originalBounds.h;
+        let scale = Math.abs(scaleX) > Math.abs(scaleY) ? scaleX : scaleY;
+        
+        newBounds.w = this.originalBounds.w * scale;
+        newBounds.h = this.originalBounds.h * scale;
+        
+        if (topLeft) {
+          newBounds.x = this.startResize.x - newBounds.w;
+          newBounds.y = this.startResize.y - newBounds.h;
+        } else if (topRight) {
+          newBounds.x = this.startResize.x;
+          newBounds.y = this.startResize.y - newBounds.h;
+        } else if (bottomLeft) {
+          newBounds.x = this.startResize.x - newBounds.w;
+          newBounds.y = this.startResize.y;
+        } else if (bottomRight) {
+          newBounds.x = this.startResize.x;
+          newBounds.y = this.startResize.y;
+        }
+      }
+    }
+
+    // Update anchor positions based on their relative positions and new bounds
+    for (let anchor of this.anchors) {
+      anchor.p.x = newBounds.x + (anchor.relativePos.x * newBounds.w);
+      anchor.p.y = newBounds.y + (anchor.relativePos.y * newBounds.h);
+      anchor.triggerMoveHandlers();
+    }
   }.bind(this);
 
   this.update = function() {
@@ -358,35 +487,35 @@ function PaintAnchorGroup() {
     let inActionArea = this.containsPoint(mp, -5, -5, -5, -5);
     let inMoveArea = this.containsPoint(mp, 10, 10, 10, 10);
 
-    if (inRotationArea || this.isRotating || this.isMoving) {
-      if ((inActionArea && !inMoveArea) && !this.isRotating && !this.isMoving) { // mouse is on border
-        let topSide = this.containsPoint(mp, -2, -2, (h * zoomSlider.value()) - 10, -2);
-        let bottomSide = this.containsPoint(mp, (h * zoomSlider.value()) - 10, -2, -2, -2);
-        let leftSide = this.containsPoint(mp, -2, (w * zoomSlider.value()) -10, -2, -2);
-        let rightSide = this.containsPoint(mp, -2, -2, -2, (w * zoomSlider.value()) - 10);
+    if (inRotationArea || this.isRotating || this.isMoving || this.isResizing) {
+      if ((inActionArea && !inMoveArea && !this.isRotating) || this.isResizing) { // mouse is on border
+        this.topSide = this.containsPoint(mp, -2, -2, (h * zoomSlider.value()) - 10, -2) || this.topSide;
+        this.bottomSide = this.containsPoint(mp, (h * zoomSlider.value()) - 10, -2, -2, -2) || this.bottomSide;
+        this.leftSide = this.containsPoint(mp, -2, (w * zoomSlider.value()) -10, -2, -2) || this.leftSide;
+        this.rightSide = this.containsPoint(mp, -2, -2, -2, (w * zoomSlider.value()) - 10) || this.rightSide;
 
-        if (topSide && leftSide) {
+        if (this.topSide && this.leftSide) {
           cursor('nwse-resize');
           this.handleResize(true, false, false, false, false, false, false, false);
-        } else if (topSide && rightSide) {
+        } else if (this.topSide && this.rightSide) {
           cursor('nesw-resize');
           this.handleResize(false, false, true, false, false, false, false, false);
-        } else if (bottomSide && leftSide) {
+        } else if (this.bottomSide && this.leftSide) {
           cursor('nesw-resize');
           this.handleResize(false, false, false, false, false, true, false, false);
-        } else if (bottomSide && rightSide) {
+        } else if (this.bottomSide && this.rightSide) {
           cursor('nwse-resize');
           this.handleResize(false, false, false, false, false, false, false, true);
-        } else if (topSide) {
+        } else if (this.topSide) {
           cursor('ns-resize');
           this.handleResize(false, true, false, false, false, false, false, false);
-        } else if (bottomSide) {
+        } else if (this.bottomSide) {
           cursor('ns-resize');
           this.handleResize(false, false, false, false, false, false, true, false);
-        } else if (rightSide) {
+        } else if (this.rightSide) {
           cursor('ew-resize');
           this.handleResize(false, false, false, false, true, false, false, false);
-        } else if (leftSide) {
+        } else if (this.leftSide) {
           cursor('ew-resize');
           this.handleResize(false, false, false, true, false, false, false, false);
         }
