@@ -79,6 +79,7 @@ function getMainCanvasSize() {
 }
 
 function setup() {
+  InitAllMovableWindows();
   let size = getMainCanvasSize();
   lastWinSize = size;
   let can = createCanvas(size.width, size.height);

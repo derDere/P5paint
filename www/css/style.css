@@ -248,6 +248,7 @@ div#main-content {
   border: 8px solid #FEFEFE;
   min-width: 1000px;
   min-height: 800px;
+  overflow: hidden;
 }
 
 div.menu {

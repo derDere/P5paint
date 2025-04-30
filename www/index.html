@@ -7,6 +7,7 @@
     <script src="js/p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/fastcounter.css">
+    <link rel="stylesheet" type="text/css" href="css/movables.css">
     <meta charset="utf-8" />
   </head>
   <body>
@@ -32,6 +33,14 @@
 
       <div id="main-canvas" class="grid-on"></div>
 
+      <div class="movable-window" data-title="Objects" data-icon="gfx/layers_stack.png" data-anchor="BL" data-width="300" data-height="400" data-m="20">
+          <div class="window-content" id="object-list"></div>
+      </div>
+
+      <div class="movable-window" data-title="Properties" data-icon="gfx/ui_scroll_pane_form.png" data-anchor="TR" data-width="300" data-height="400" data-m="20">
+          <div class="window-content" id="property-grid"></div>
+      </div>
+
     </div>
 
     <table class="layout" cellspacing="10" cellpadding="0">
@@ -46,12 +55,10 @@
           </main>
         </td>
         <td rowspan="2" valign="top">
-          <div id="property-grid"></div>
         </td>
       </tr>
       <tr>
         <td valign="top">
-          <div id="object-list"></div>
         </td>
       </tr>
       <tr>
@@ -78,6 +85,7 @@
         }
       }
     </script>
+    <script src="js/movables.js"></script>
     <script src="js/paint_anchor.js"></script>
     <script src="js/paint_object.js"></script>
     <script src="js/paint_object_list.js"></script>
