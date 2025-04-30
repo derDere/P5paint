@@ -9,6 +9,7 @@ const MOVABLE_WINDOW_CONTENT_CLASS = "window-content";
 
 const MOVABLE_WINDOW_HEADER_CLASS = "movable-window-header";
 const MOVABLE_WINDOW_HEADER_ICON_CLASS = "movable-window-icon";
+const MOVABLE_WINDOW_MINIMIZE_BTN_CLASS = "movable-window-minimize-btn";
 const MOVABLE_WINDOW_GRIP_CLASS = 'movable-window-grip';
 const MOVALBE_WINDOW_GRIP_DIR_START = 'grip-';
 const MOVABLE_WINDOW_GRIP_DIR_TOP = 'top';
@@ -44,8 +45,10 @@ function MovableWindow(ele) {
 
     this.ele = ele;
 
-    this.width = parseInt(ele.dataset.width) || 200;
-    this.height = parseInt(ele.dataset.height) || 200;
+    this.initialWidth = parseInt(ele.dataset.width) || 200;
+    this.initialHeight = parseInt(ele.dataset.height) || 200;
+    this.width = this.initialWidth;
+    this.height = this.initialHeight;
     this.margin = parseInt(ele.dataset.m) || 10;
     this.title = ele.dataset.title || "Drag me!";
     this.iconUrl = ele.dataset.icon || "unknown image";
@@ -53,23 +56,26 @@ function MovableWindow(ele) {
 
     this.isMoving = false;
     this.isResizing = false;
-    this.offsetX = this.margin;
-    this.offsetY = this.margin;
+    this.startX = 0;
+    this.startY = 0;
+    this.lastWidth = this.width;
+    this.lastHeight = this.height;
+    this.isMinimized = false;
 
-    this.ele.style.width = this.width + "px";
-    this.ele.style.height = this.height + "px";
     if (this.anchor.toUpperCase().indexOf("T") != -1) {
-        this.ele.style.top = (this.margin + WIN_AREA_MARGIN_TOP) + "px";
+        this.initialOffsetY = this.margin + WIN_AREA_MARGIN_TOP;
     }
     if (this.anchor.toUpperCase().indexOf("B") != -1) {
-        this.ele.style.bottom = (this.margin + WIN_AREA_MARGIN_BOTTOM) + "px";
+        this.initialOffsetY = this.margin + WIN_AREA_MARGIN_BOTTOM;
     }
     if (this.anchor.toUpperCase().indexOf("L") != -1) {
-        this.ele.style.left = (this.margin + WIN_AREA_MARGIN_LEFT) + "px";
+        this.initialOffsetX = this.margin + WIN_AREA_MARGIN_LEFT;
     }
     if (this.anchor.toUpperCase().indexOf("R") != -1) {
-        this.ele.style.right = (this.margin + WIN_AREA_MARGIN_RIGHT) + "px";
+        this.initialOffsetX = this.margin + WIN_AREA_MARGIN_RIGHT;
     }
+    this.offsetX = this.initialOffsetX;
+    this.offsetY = this.initialOffsetY;
 
     this.header = document.createElement('div');
     this.header.className = MOVABLE_WINDOW_HEADER_CLASS;
@@ -81,6 +87,10 @@ function MovableWindow(ele) {
     this.header.appendChild(this.icon);
     this.icon.style.backgroundImage = `url('${this.iconUrl}')`;
 
+    this.miniBtn = document.createElement('button');
+    this.miniBtn.className = MOVABLE_WINDOW_MINIMIZE_BTN_CLASS;
+    this.ele.appendChild(this.miniBtn);
+
     this.grips = [];
     for (let grip of MOVABLE_WINDOW_GRIPS) {
         let gripEle = document.createElement('div');
@@ -88,6 +98,62 @@ function MovableWindow(ele) {
         this.ele.appendChild(gripEle);
         this.grips.push(gripEle);
     }
+
+    this.updatePosition = function() {
+        // Update position based on anchor
+        if (this.anchor.toUpperCase().indexOf("T") != -1) {
+            this.ele.style.top = this.offsetY + "px";
+        }
+        if (this.anchor.toUpperCase().indexOf("B") != -1) {
+            this.ele.style.bottom = this.offsetY + "px";
+        }
+        if (this.anchor.toUpperCase().indexOf("L") != -1) {
+            this.ele.style.left = this.offsetX + "px";
+        }
+        if (this.anchor.toUpperCase().indexOf("R") != -1) {
+            this.ele.style.right = this.offsetX + "px";
+        }
+    }.bind(this);
+
+    this.updateSize = function() {
+        this.ele.style.width = this.width + "px";
+        this.ele.style.height = this.height + "px";
+    }.bind(this);
+
+    this.focusUpdate = function() {
+        let allWindows = document.getElementsByClassName(MOVABLE_WINDOW_CLASS);
+        for (let win of allWindows) {
+            win.classList.remove('focused');
+        }
+        this.ele.classList.add('focused');
+    }.bind(this);
+    this.ele.addEventListener('click', this.focusUpdate);
+
+    this.updateSize();
+    this.updatePosition();
+
+    this.toggleMinimize = function() {
+        this.focusUpdate();
+        if (this.isMinimized) {
+            this.width = this.lastWidth;
+            this.height = this.lastHeight;
+            this.updateSize();
+            this.isMinimized = false;
+            this.ele.classList.remove('minimized');
+        } else {
+            this.lastWidth = this.width;
+            this.lastHeight = this.height;
+            this.width = this.initialWidth;
+            this.height = 40;
+            this.offsetX = this.initialOffsetX;
+            this.offsetY = this.initialOffsetY;
+            this.updateSize();
+            this.updatePosition();
+            this.isMinimized = true;
+            this.ele.classList.add('minimized');
+        }
+    }.bind(this);
+    this.miniBtn.addEventListener('click', this.toggleMinimize);
 
     this.stopAction = function(e) {
         e.preventDefault();
@@ -97,6 +163,7 @@ function MovableWindow(ele) {
     }.bind(this);
 
     this.startDrag = function(e) {
+        this.focusUpdate();
         e.preventDefault();
         e.stopPropagation();
         this.isMoving = true;
@@ -105,18 +172,15 @@ function MovableWindow(ele) {
     }.bind(this);
 
     this.startResize = function(e) {
+        this.focusUpdate();
         e.preventDefault();
         e.stopPropagation();
-        let resizeDir = findGripDirection(e.target);
+        if (this.isMinimized) return;
         this.isMoving = false;
         this.isResizing = true;
-        this.resizeDirection = resizeDir;
+        this.resizeDirection = findGripDirection(e.target);
         this.startX = e.clientX;
         this.startY = e.clientY;
-        this.startWidth = parseInt(this.ele.style.width);
-        this.startHeight = parseInt(this.ele.style.height);
-        this.startLeft = parseInt(this.ele.style.left);
-        this.startTop = parseInt(this.ele.style.top);
     }.bind(this);
     
     this.mouseMoveDragLogic = function(e) {
@@ -136,80 +200,68 @@ function MovableWindow(ele) {
         this.offsetX += deltaX;
         this.offsetY += deltaY;
         
-        // Update position based on anchor
-        if (this.anchor.toUpperCase().indexOf("T") != -1) {
-            this.ele.style.top = this.offsetY + "px";
-        }
-        if (this.anchor.toUpperCase().indexOf("B") != -1) {
-            this.ele.style.bottom = this.offsetY + "px";
-        }
-        if (this.anchor.toUpperCase().indexOf("L") != -1) {
-            this.ele.style.left = this.offsetX + "px";
-        }
-        if (this.anchor.toUpperCase().indexOf("R") != -1) {
-            this.ele.style.right = this.offsetX + "px";
-        }
+        this.updatePosition();
         
         // Update start position for next move
         this.startX = e.clientX;
         this.startY = e.clientY;
     }.bind(this);
-      this.mouseMoveResizeLogic = function(e) {
+
+    this.mouseMoveResizeLogic = function(e) {
         // 1. Calculate initial deltas
         let deltaX = e.clientX - this.startX;
         let deltaY = e.clientY - this.startY;
         
-        // 2. Determine if deltas need reversing based on grab point and anchor
-        let reverseX = false;
-        let reverseY = false;
-        
         // If grabbing left edge and left-anchored, or right edge and right-anchored
-        if ((this.resizeDirection.includes('left') && this.anchor.includes('L')) ||
-            (this.resizeDirection.includes('right') && this.anchor.includes('R'))) {
-            reverseX = true;
+        if (this.resizeDirection.includes('left')) {
+            deltaX = -deltaX;
         }
-        
         // If grabbing top edge and top-anchored, or bottom edge and bottom-anchored
-        if ((this.resizeDirection.includes('top') && this.anchor.includes('T')) ||
-            (this.resizeDirection.includes('bottom') && this.anchor.includes('B'))) {
-            reverseY = true;
-        }
-        
-        // Apply reversals if needed
-        if (reverseX) deltaX = -deltaX;
-        if (reverseY) deltaY = -deltaY;
-
-        // 3. Calculate new size
-        let newWidth = this.startWidth;
-        let newHeight = this.startHeight;
-
-        if (this.resizeDirection.includes('right')) {
-            newWidth = Math.max(WINDOW_MIN_SIZE, this.startWidth + deltaX);
-        } else if (this.resizeDirection.includes('left')) {
-            newWidth = Math.max(WINDOW_MIN_SIZE, this.startWidth - deltaX);
+        if (this.resizeDirection.includes('top')) {
+            deltaY = -deltaY;
         }
 
-        if (this.resizeDirection.includes('bottom')) {
-            newHeight = Math.max(WINDOW_MIN_SIZE, this.startHeight + deltaY);
-        } else if (this.resizeDirection.includes('top')) {
-            newHeight = Math.max(WINDOW_MIN_SIZE, this.startHeight - deltaY);
+        let newWidth = this.width;
+        if ((this.resizeDirection.includes('left')) || (this.resizeDirection.includes('right'))) {
+            newWidth = Math.max(WINDOW_MIN_SIZE, this.width + deltaX);
+        }
+        if (newWidth <= WINDOW_MIN_SIZE) {
+            newWidth = this.width;
+            deltaX = 0;
         }
 
-        // 4. Move window if needed to keep grabbed edge at cursor
-        if (this.resizeDirection.includes('left') && !this.anchor.includes('L')) {
-            this.offsetX = this.startLeft + deltaX;
-            this.ele.style.left = this.offsetX + "px";
+        let newHeight = this.height;
+        if ((this.resizeDirection.includes('top')) || (this.resizeDirection.includes('bottom'))) {
+            newHeight = Math.max(WINDOW_MIN_SIZE, this.height + deltaY);
         }
-        if (this.resizeDirection.includes('top') && !this.anchor.includes('T')) {
-            this.offsetY = this.startTop + deltaY;
-            this.ele.style.top = this.offsetY + "px";
+        if (newHeight <= WINDOW_MIN_SIZE) {
+            newHeight = this.height;
+            deltaY = 0;
         }
 
-        // Apply the new dimensions
         this.width = newWidth;
         this.height = newHeight;
-        this.ele.style.width = newWidth + "px";
-        this.ele.style.height = newHeight + "px";
+
+        // 4. Move window if needed to keep grabbed edge at cursor
+        if (this.resizeDirection.includes('left') && this.anchor.includes('L')) {
+            this.offsetX -= deltaX;
+        }
+        if (this.resizeDirection.includes('top') && this.anchor.includes('T')) {
+            this.offsetY -= deltaY;
+        }
+        if (this.resizeDirection.includes('right') && this.anchor.includes('R')) {
+            this.offsetX -= deltaX;
+        }
+        if (this.resizeDirection.includes('bottom') && this.anchor.includes('B')) {
+            this.offsetY -= deltaY;
+        }
+        
+        this.updatePosition();
+
+        this.updateSize();
+
+        this.startX = e.clientX;
+        this.startY = e.clientY;
     }.bind(this);
 
     this.windowMouseMove = function(e) {

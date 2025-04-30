@@ -5,6 +5,12 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    opacity: 0.9;
+}
+
+.movable-window.focused {
+    opacity: 1;
+    z-index: 1001;
 }
 
 .window-content {
@@ -26,9 +32,35 @@ div.movable-window-header {
     line-height: 30px;
     background-color: #F5F5F5;
     border-bottom: 1px solid #ccc;
-    cursor: move;
+    cursor: default;
     text-align: center;
     user-select: none;
+    color: #999;
+    font-weight: bold;
+
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,f1f1f1+50,e1e1e1+51,f6f6f6+100;White+Gloss+%231 */
+    background: linear-gradient(to bottom,  #ffffff 0%,#f1f1f1 50%,#e1e1e1 51%,#f6f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+button.movable-window-minimize-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    background: url('../gfx/minimize.png') no-repeat center center, #F5F5F5;
+    border: #999 1px solid;
+    border-radius: 4px;
+    opacity: 0.5;
+}
+
+    button.movable-window-minimize-btn:hover {
+        opacity: 1;
+    }
+
+.minimized button.movable-window-minimize-btn {
+    background: url('../gfx/maximize.png') no-repeat center center, #F5F5F5;
 }
 
 div.movable-window-icon {
@@ -48,6 +80,14 @@ div.movable-window-grip {
     cursor: pointer;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+div.movable-window-grip:hover {
+    background: #fff;
+}
+
+.minimized div.movable-window-grip:hover {
+    background: #F5F5F5;
 }
 
 div.movable-window-grip.grip-top {
@@ -140,4 +180,8 @@ div.movable-window-grip.grip-bottom-right {
     cursor: nwse-resize;
     border-bottom: none;
     border-right: none;
+}
+
+.minimized div.movable-window-grip {
+    cursor: default !important;
 }
