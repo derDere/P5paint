@@ -853,6 +853,7 @@ function PaintShape(id) {
     }
     return {
       ...this.createBaseJJ(),
+      'UseShapeFunction': this.UseShapeFunction,
       'Close': this.Close,
       'Path': [...l]
     };
