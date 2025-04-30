@@ -524,7 +524,7 @@ function PaintAnchorGroup() {
         this.handleMove();
       } else {
         // in rotation area but not in action area or move area
-        cursor('rotation_cursor.png');
+        cursor('gfx/rotation_cursor.png');
         this.handleRotation();
       }
 
