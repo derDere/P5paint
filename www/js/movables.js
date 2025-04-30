@@ -54,8 +54,6 @@ function MovableWindow(ele) {
     this.isResizing = false;
     this.offsetX = this.margin;
     this.offsetY = this.margin;
-    this.startX = 0;
-    this.startY = 0;
 
     this.ele.style.width = this.width + "px";
     this.ele.style.height = this.height + "px";
