@@ -6,19 +6,38 @@
     <script src="js/p5.js"></script>
     <script src="js/p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/fastcounter.css">
     <meta charset="utf-8" />
   </head>
   <body>
-    <div id="top-links">
-      <a href="V1/" target="_blank">Version 1.0</a> |
-      <a href="https://github.com/derDere/P5paint" target="_blank">GitHub/derDere</a> |
-      <a href="README.md" target="_blank">Documentation</a> |
-      <a href="LICENSE" target="_blank">License</a>
+    <div id="main-content">
+
+      <div class="menu">
+
+        <div id="fastcounter">
+          <span id="fc-44418"></span>
+          <span id="datenschutz-toggle" onclick="toggleDatenschutz();"><span><span>Datenschutz</span></span></span>
+        </div>
+
+        <div id="menu"></div>
+
+        <div id="top-links">
+          <a href="V1/" target="_blank">Version 1.0</a> |
+          <a href="https://github.com/derDere/P5paint" target="_blank">GitHub/derDere</a> |
+          <a href="README.md" target="_blank">Documentation</a> |
+          <a href="LICENSE" target="_blank">License</a>
+        </div>
+
+      </div>
+
+      <div id="main-canvas" class="grid-on"></div>
+
     </div>
+
     <table class="layout" cellspacing="10" cellpadding="0">
       <tr>
         <td colspan="2">
-          <div id="menu"></div>
+          <!--div id="menu"></div-->
         </td>
       </tr>
       <tr>
@@ -49,9 +68,6 @@
       <p>Unsere Website verwendet den Besucherzähler ImCounter. ImCounter ist ein kostenloser Besucherzähler, welcher die Besucher und Seitenaufrufe auf dieser Internetseite analysiert und auswertet. Dabei werden IP-Adresse, Datum und Uhrzeit der Anfrage, Browsertyp, Browsersprache, Bildschirmauflösung, Referrer und Gerätetyp ausgelesen und an den Betreiber von ImCounter übertragen. Alle Daten werden SSL-verschlüsselt übertragen und selbstverständlich nach den Richtlinien der DSVGO vollständig anonymisiert und ausgewertet. Die IP-Adresse wird während der Übertragung pseudonymisiert, sodass keine personenbezogenen Daten an den Betreiber von ImCounter übermittelt werden.</p><p>Der Datenerhebung und -speicherung können Sie jederzeit mit Wirkung für die Zukunft widersprechen. Um einer Datenerhebung und -speicherung Ihrer Besucherdaten für die Zukunft zu widersprechen, können Sie unter nachfolgendem Link ein Opt-Out-Cookie von ImCounter beziehen, dieser bewirkt, dass zukünftig keine Besucherdaten Ihres Browsers bei ImCounter erhoben und gespeichert werden:  <a href="https://www.imcounter.com/de/privacy/44418.htm">https://www.imcounter.com/de/privacy/44418.htm</a>. Dadurch wird ein Opt-Out-Cookie mit dem Namen "privcookie" von ImCounter gesetzt. Bitte löschen Sie diesen Cookie nicht, solange Sie Ihren Widerspruch aufrecht erhalten möchten.</p><p>Weitere Informationen finden Sie in den Datenschutzbestimmungen von ImCounter: <a href="https://www.imcounter.com/datenschutz.html">https://www.imcounter.com/datenschutz.html</a>.</p>
     </div>
 
-    <span id="fc-44418"></span>
-    <span id="datenschutz-toggle" onclick="toggleDatenschutz();"><span>Datenschutz</span></span>
-
     <script>
       function toggleDatenschutz() {
         var datenschutz = document.getElementById("datenschutz");
@@ -80,5 +96,6 @@
     <noscript>
       <a href="https://www.imcounter.com/stats/44418/dashboard" rel="nofollow" target="_blank" title="Kostenloser Besucherz&auml;hler"><img src="https://www.imcounter.com/fcounter.php?id=44418;" alt="Kostenloser Besucherz&auml;hler" title="Kostenloser Besucherz&auml;hler"></a>
     </noscript>
+
   </body>
 </html>

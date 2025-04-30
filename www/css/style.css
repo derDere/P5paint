@@ -6,11 +6,6 @@ html, body {
   font-family: arial;
 }
 
-canvas {
-  display: block;
-  margin: 5px;
-}
-
 table.layout {
   margin: 25px auto;
 }
@@ -203,82 +198,6 @@ div.path-list-buttons {
   text-decoration: underline;
 }
 
-#fc-44418 {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-
-#datenschutz-toggle {
-  position: absolute;
-  top: 30px;
-  left: 10px;
-  background: #fff;
-
-  cursor: pointer;
-  box-sizing: border-box;
-  border: 1px solid #CCD1D9;
-  display: inline-block;
-  height: 15px;
-  line-height: 15px;
-  margin: 0;
-  padding: 0;
-
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-}
-
-#datenschutz-toggle > span {
-  display: inline-block;
-  height: 11px;
-  line-height: 11px;
-  vertical-align: top;
-  font-size: 7px;
-  text-transform: uppercase;
-  color: #fff;
-  background: #CCD1D9;
-  border: 0 none;
-  margin: 1px;
-  padding: 0 6px 0 0;
-}
-
-#datenschutz-toggle > span::before {
-  display: inline-block;
-  content: '?';
-  font-size: 7px;
-  color: #CCD1D9;
-  background: #fff;
-  height: 11px;
-  width: 12px;
-  line-height: 11px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 10px;
-  margin: 0 6px 0 0;
-  padding: 0;
-}
-
-#datenschutz-toggle:hover {
-  border: 1px solid #888a8d;
-}
-#datenschutz-toggle:hover > span {
-  background: #888a8d;
-}
-#datenschutz-toggle:hover > span::before {
-  color: #888a8d;
-}
-
-#datenschutz-toggle:active {
-  border: 1px solid #becbe0;
-}
-#datenschutz-toggle:active > span {
-  background: #becbe0;
-}
-#datenschutz-toggle:active > span::before {
-  color: #becbe0;
-}
-
 #datenschutz {
   position: absolute;
   top: 50px;
@@ -304,4 +223,91 @@ div.path-list-buttons {
   display: none;
 }
 
-/* EOF */
+/* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
+/*   New Layout Styles */
+/* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
+
+html,
+body,
+div#main-content {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #333;
+  font-family: arial;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+div#main-content {
+  position: relative;
+  box-sizing: border-box;
+  border: 8px solid #FEFEFE;
+  min-width: 1000px;
+  min-height: 800px;
+}
+
+div.menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  background-color: #F5F5F5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+div#top-links {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 14px;
+}
+
+div#menu {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  margin-left: -400px;
+  width: 800px;
+  height: 30px;
+  line-height: 30px;
+}
+
+div#fastcounter {
+  position: absolute;
+  top: 0;
+  left: 10px;
+}
+
+div#main-canvas {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 50px);
+  background: #F5F5F5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+  div#main-canvas.grid-on {
+    background: url(../gfx/grid_bg.png) repeat center center;
+  }
+  div#main-canvas.grid-dot {
+    background: url(../gfx/grid_dot_bg.png) repeat center center;
+  }
+  div#main-canvas.grid-off {
+    background: #fff;
+  }
+
+div#main-canvas canvas {
+  background: transparent;
+  display: block;
+}

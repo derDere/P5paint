@@ -19,6 +19,7 @@ var viewPanningMovementMouseX = 0;
 var viewPanningMovementMouseY = 0;
 var viewPanningMovement = false;
 var viewPanningCenterBtn;
+var lastWinSize = { width: 0, height: 0 };
 
 function copyCode() {
   const textarea = document.getElementById("code-content");
@@ -69,8 +70,19 @@ function PointViewToReal(x, y) {
   return p;
 }
 
+function getMainCanvasSize() {
+  let div = document.getElementById('main-canvas');
+  return {
+    width: div.clientWidth,
+    height: div.clientHeight
+  };
+}
+
 function setup() {
-  let can = createCanvas(600, 600);
+  let size = getMainCanvasSize();
+  lastWinSize = size;
+  let can = createCanvas(size.width, size.height);
+  can.parent('main-canvas');
   can.canvas.addEventListener('mousedown', (e) => {
     if (e.button == 1) { // Middle mouse button
       e.preventDefault();
@@ -178,6 +190,14 @@ function setup() {
   bgColorPicker.parent('menu');
 }
 
+function windowResized() {
+  let size = getMainCanvasSize();
+  viewPanningX = (viewPanningX * size.width) / lastWinSize.width;
+  viewPanningY = (viewPanningY * size.height) / lastWinSize.height;
+  resizeCanvas(size.width, size.height);
+  lastWinSize = size;
+}
+
 function draw() {
 
   if (mouseIsPressed && mouseButton == CENTER) {
@@ -197,25 +217,28 @@ function draw() {
 
   anchorSelector.update(objList?.getSelected());
 
-  let bgc = color('' + bgColorPicker.value());
-  background(bgc);
+  //let bgc = color('' + bgColorPicker.value());
+  //background(bgc);
+  clear();
+  background(0, 0, 0, 0);
+  
   push();
   translate(width / 2, height / 2);
   
-  if (drawGridCb.checked()) {
-    push();
-    scale(zoomSlider.value());
-    noStroke();
-    fill(255 - red(bgc), 255 - green(bgc), 255 - blue(bgc), 24);
-    for(let x = -600; x < 600; x += 10) {
-      for(let y = -600; y < 600; y += 10) {
-        if ( ((x + y) % 20) == 0) {
-          rect(x, y, 10, 10); 
-        }
-      } 
-    }
-    pop();
-  }
+  //if (drawGridCb.checked()) {
+  //  push();
+  //  scale(zoomSlider.value());
+  //  noStroke();
+  //  fill(255 - red(bgc), 255 - green(bgc), 255 - blue(bgc), 24);
+  //  for(let x = -600; x < 600; x += 10) {
+  //    for(let y = -600; y < 600; y += 10) {
+  //      if ( ((x + y) % 20) == 0) {
+  //        rect(x, y, 10, 10); 
+  //      }
+  //    } 
+  //  }
+  //  pop();
+  //}
 
   push();
   scale(zoomSlider.value());
