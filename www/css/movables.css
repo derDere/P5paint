@@ -15,7 +15,7 @@
 
 .window-content {
     position: absolute;
-    top: 45px;
+    top: 35px;
     left: 5px;
     right: 5px;
     bottom: 5px;
@@ -37,6 +37,9 @@ div.movable-window-header {
     user-select: none;
     color: #999;
     font-weight: bold;
+    white-space: nowrap;
+    word-wrap: none;
+    overflow: hidden;
 
     /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,f1f1f1+50,e1e1e1+51,f6f6f6+100;White+Gloss+%231 */
     background: linear-gradient(to bottom,  #ffffff 0%,#f1f1f1 50%,#e1e1e1 51%,#f6f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */

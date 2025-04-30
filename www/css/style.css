@@ -1,31 +1,3 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  background: #fff;
-  color: #333;
-  font-family: arial;
-}
-
-table.layout {
-  margin: 25px auto;
-}
-
-table.layout td {
-  border: 1px solid #F0F0F0;
-  background: #FEFEFE;
-}
-
-table.layout td div {
-  margin: 5px;
-}
-
-#object-list select {
-  min-width: 600px;
-  border: 0 none;
-  background: #FEFEFE;
-  scrollbar-width: thin;
-}
-
 #menu > div {
   display: inline-block;
   margin: 0 20px 0 0;
@@ -53,149 +25,6 @@ table.layout td div {
 
 #menu > button {
   margin: 0 20px 0 0;
-}
-
-table.properties {
-  width: 400px;
-}
-
-table.properties td {
-  border: 0 none;
-  border-bottom: 1px solid #EEE;
-}
-
-table.properties td.name-display {
-  text-align: right;
-  padding: 0 10px;
-}
-
-table.properties td.type-name-display {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 0 10px;
-}
-
-#code-content {
-  font-family: monospace;
-  overflow: auto;
-  white-space: pre;
-  word-break: none;
-  padding: 0;
-  cursor: text;
-  max-height: 200px;
-  height: 200px;
-  width: 100%;
-  resize: none;
-  scrollbar-width: thin;
-  border: 1px solid #ccc;
-  background-color: #F5F5F5;
-  line-height: 1.4;
-  border: 0 none;
-  outline: none;
-}
-
-
-#code {
-  position: relative;
-}
-
-#code button {
-  position: absolute;
-  top: 10px;
-  right: 25px;
-}
-
-td.empty-qm {
-  padding: 50px 0;
-  font-size: 150px;
-  color: #F7F7F7;
-}
-
-#code-td {
-  background: #F5F5F5;
-}
-
-button.add-obj,
-button.remove-btn {
-  margin: 10px 0px 5px 0px;
-  padding: 5px 20px;
-  width: 200px
-}
-
-button.remove-btn {
-  color: red;
-  font-weight: bold;
-}
-
-.color-input,
-.color-input span,
-.color-input input{
-  vertical-align: middle;
-  line-height: 18px;
-  height: 25px;
-  margin: 0;
-}
-.color-input input[type=number] {
-  height: 18px;
-}
-
-table.path-points input {
-  width: 60px;
-}
-
-table.path-points input.path-point-selection {
-  width: 20px;
-}
-
-button.rm-path-point {
-  color: red;
-}
-
-button.control-btn {
-  padding: 2px 8px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-button.control-btn:hover {
-  background: #f0f0f0;
-}
-
-
-div.path-point-list {
-  position: relative;
-  overflow: auto;
-  max-height: 200px;
-  scrollbar-width: thin;
-}
-
-div.path-list-buttons {
-  width: 190px;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  background: rgba(255, 255, 255, .8);
-}
-
-#top-links {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 14px;
-}
-
-#top-links a {
-  color: #666;
-  text-decoration: none;
-  margin: 0 5px;
-}
-
-#top-links a:hover {
-  color: #000;
-  text-decoration: underline;
 }
 
 #datenschutz {
@@ -273,6 +102,17 @@ div#top-links {
   right: 10px;
   font-size: 14px;
 }
+
+  #top-links a {
+    color: #666;
+    text-decoration: none;
+    margin: 0 5px;
+  }
+
+    #top-links a:hover {
+      color: #000;
+      text-decoration: underline;
+    }
 
 div#menu {
   position: absolute;

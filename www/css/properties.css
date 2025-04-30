@@ -1,0 +1,90 @@
+table.properties {
+  width: 100%;
+}
+
+table.properties td {
+  border: 0 none;
+  border-bottom: 1px solid #EEE;
+}
+
+table.properties td.name-display {
+  text-align: right;
+  padding: 0 10px;
+}
+
+table.properties td.type-name-display {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+td.empty-qm {
+  padding: 50px 0;
+  font-size: 150px;
+  color: #F7F7F7;
+}
+
+button.add-obj,
+button.remove-btn {
+  margin: 10px 0px 5px 0px;
+  padding: 5px 20px;
+  width: 200px
+}
+
+button.remove-btn {
+  color: red;
+  font-weight: bold;
+}
+
+.color-input,
+.color-input span,
+.color-input input{
+  vertical-align: middle;
+  line-height: 18px;
+  height: 25px;
+  margin: 0;
+}
+.color-input input[type=number] {
+  height: 18px;
+}
+
+table.path-points input {
+  width: 60px;
+}
+
+table.path-points input.path-point-selection {
+  width: 20px;
+}
+
+button.rm-path-point {
+  color: red;
+}
+
+button.control-btn {
+  padding: 2px 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+button.control-btn:hover {
+  background: #f0f0f0;
+}
+
+
+div.path-point-list {
+  position: relative;
+  overflow: auto;
+  max-height: 200px;
+  scrollbar-width: thin;
+}
+
+div.path-list-buttons {
+  width: 190px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, .8);
+}

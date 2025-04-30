@@ -6,6 +6,8 @@
     <script src="js/p5.js"></script>
     <script src="js/p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/properties.css">
+    <link rel="stylesheet" type="text/css" href="css/code.css">
     <link rel="stylesheet" type="text/css" href="css/fastcounter.css">
     <link rel="stylesheet" type="text/css" href="css/movables.css">
     <meta charset="utf-8" />
@@ -37,38 +39,17 @@
           <div class="window-content" id="object-list"></div>
       </div>
 
-      <div class="movable-window" data-title="Properties" data-icon="gfx/ui_scroll_pane_form.png" data-anchor="TR" data-width="300" data-height="400" data-m="20">
+      <div class="movable-window" data-title="Properties" data-icon="gfx/ui_scroll_pane_form.png" data-anchor="TR" data-width="400" data-height="600" data-m="20">
           <div class="window-content" id="property-grid"></div>
       </div>
 
-    </div>
-
-    <table class="layout" cellspacing="10" cellpadding="0">
-      <tr>
-        <td colspan="2">
-          <!--div id="menu"></div-->
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <main>
-          </main>
-        </td>
-        <td rowspan="2" valign="top">
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-        </td>
-      </tr>
-      <tr>
-        <td id="code-td" colspan="2">
-          <div id="code">
+      <div class="movable-window" data-title="Code Generator" data-icon="gfx/code_ico.png" data-anchor="BR" data-width="500" data-height="200" data-m="20">
+          <div class="window-content" id="code">
             <textarea id="code-content" readonly="readonly"></textarea>
           </div>
-        </td>
-      </tr>
-    </table>
+      </div>
+
+    </div>
 
     <div id="datenschutz" class="hidden">
       <h2>Datenschutzerklärung</h2>
