@@ -2,6 +2,7 @@ const WIN_AREA_MARGIN_TOP = 50;
 const WIN_AREA_MARGIN_RIGHT = 0;
 const WIN_AREA_MARGIN_BOTTOM = 0;
 const WIN_AREA_MARGIN_LEFT = 0;
+const WINDOW_MIN_SIZE = 100;
 
 const MOVABLE_WINDOW_CLASS = "movable-window";
 const MOVABLE_WINDOW_CONTENT_CLASS = "window-content";
@@ -117,7 +118,7 @@ function MovableWindow(ele) {
         this.startLeft = parseInt(this.ele.style.left);
         this.startTop = parseInt(this.ele.style.top);
     }.bind(this);
-
+    
     this.mouseMoveDragLogic = function(e) {
         // Calculate delta from start position
         let deltaX = e.clientX - this.startX;
@@ -153,9 +154,62 @@ function MovableWindow(ele) {
         this.startX = e.clientX;
         this.startY = e.clientY;
     }.bind(this);
+      this.mouseMoveResizeLogic = function(e) {
+        // 1. Calculate initial deltas
+        let deltaX = e.clientX - this.startX;
+        let deltaY = e.clientY - this.startY;
+        
+        // 2. Determine if deltas need reversing based on grab point and anchor
+        let reverseX = false;
+        let reverseY = false;
+        
+        // If grabbing left edge and left-anchored, or right edge and right-anchored
+        if ((this.resizeDirection.includes('left') && this.anchor.includes('L')) ||
+            (this.resizeDirection.includes('right') && this.anchor.includes('R'))) {
+            reverseX = true;
+        }
+        
+        // If grabbing top edge and top-anchored, or bottom edge and bottom-anchored
+        if ((this.resizeDirection.includes('top') && this.anchor.includes('T')) ||
+            (this.resizeDirection.includes('bottom') && this.anchor.includes('B'))) {
+            reverseY = true;
+        }
+        
+        // Apply reversals if needed
+        if (reverseX) deltaX = -deltaX;
+        if (reverseY) deltaY = -deltaY;
 
-    this.mouseMoveResizeLogic = function(e) {
-        // Todo - Implement resizing logic based on resizeDirection
+        // 3. Calculate new size
+        let newWidth = this.startWidth;
+        let newHeight = this.startHeight;
+
+        if (this.resizeDirection.includes('right')) {
+            newWidth = Math.max(WINDOW_MIN_SIZE, this.startWidth + deltaX);
+        } else if (this.resizeDirection.includes('left')) {
+            newWidth = Math.max(WINDOW_MIN_SIZE, this.startWidth - deltaX);
+        }
+
+        if (this.resizeDirection.includes('bottom')) {
+            newHeight = Math.max(WINDOW_MIN_SIZE, this.startHeight + deltaY);
+        } else if (this.resizeDirection.includes('top')) {
+            newHeight = Math.max(WINDOW_MIN_SIZE, this.startHeight - deltaY);
+        }
+
+        // 4. Move window if needed to keep grabbed edge at cursor
+        if (this.resizeDirection.includes('left') && !this.anchor.includes('L')) {
+            this.offsetX = this.startLeft + deltaX;
+            this.ele.style.left = this.offsetX + "px";
+        }
+        if (this.resizeDirection.includes('top') && !this.anchor.includes('T')) {
+            this.offsetY = this.startTop + deltaY;
+            this.ele.style.top = this.offsetY + "px";
+        }
+
+        // Apply the new dimensions
+        this.width = newWidth;
+        this.height = newHeight;
+        this.ele.style.width = newWidth + "px";
+        this.ele.style.height = newHeight + "px";
     }.bind(this);
 
     this.windowMouseMove = function(e) {
