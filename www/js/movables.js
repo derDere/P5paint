@@ -52,8 +52,8 @@ function MovableWindow(ele) {
 
     this.isMoving = false;
     this.isResizing = false;
-    this.offsetX = 0;
-    this.offsetY = 0;
+    this.offsetX = this.margin;
+    this.offsetY = this.margin;
     this.startX = 0;
     this.startY = 0;
 
@@ -92,32 +92,155 @@ function MovableWindow(ele) {
 
     this.stopAction = function(e) {
         e.preventDefault();
+        e.stopPropagation();
         this.isMoving = false;
+        this.isResizing = false;
     }.bind(this);
 
     this.startDrag = function(e) {
-        // Todo: implement the dragging logic
+        e.preventDefault();
+        e.stopPropagation();
+        this.isMoving = true;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
     }.bind(this);
 
     this.startResize = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         let resizeDir = findGripDirection(e.target);
-        // Todo: implement the resizing logic
+        this.isMoving = false;
+        this.isResizing = true;
+        this.resizeDirection = resizeDir;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        this.startWidth = parseInt(this.ele.style.width);
+        this.startHeight = parseInt(this.ele.style.height);
+        this.startLeft = parseInt(this.ele.style.left);
+        this.startTop = parseInt(this.ele.style.top);
+    }.bind(this);
+
+    this.mouseMoveDragLogic = function(e) {
+        // Calculate delta from start position
+        let deltaX = e.clientX - this.startX;
+        let deltaY = e.clientY - this.startY;
+        
+        // Reverse deltas for right/bottom anchors
+        if (this.anchor.toUpperCase().indexOf("R") != -1) {
+            deltaX = -deltaX;
+        }
+        if (this.anchor.toUpperCase().indexOf("B") != -1) {
+            deltaY = -deltaY;
+        }
+        
+        // Update offsets with the appropriate deltas
+        this.offsetX += deltaX;
+        this.offsetY += deltaY;
+        
+        // Update position based on anchor
+        if (this.anchor.toUpperCase().indexOf("T") != -1) {
+            this.ele.style.top = this.offsetY + "px";
+        }
+        if (this.anchor.toUpperCase().indexOf("B") != -1) {
+            this.ele.style.bottom = this.offsetY + "px";
+        }
+        if (this.anchor.toUpperCase().indexOf("L") != -1) {
+            this.ele.style.left = this.offsetX + "px";
+        }
+        if (this.anchor.toUpperCase().indexOf("R") != -1) {
+            this.ele.style.right = this.offsetX + "px";
+        }
+        
+        // Update start position for next move
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+    }.bind(this);
+
+    this.mouseMoveResizeLogic = function(e) {
+        // Todo - Implement resizing logic based on resizeDirection
     }.bind(this);
 
     this.windowMouseMove = function(e) {
-        // Todo: implement the mouse move logic
+        if (!this.isMoving && !this.isResizing) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (this.isMoving) {
+            this.mouseMoveDragLogic(e);
+
+        } else if (this.isResizing) {
+            this.mouseMoveResizeLogic(e);
+        }
     }.bind(this);
 
+    this.fixFalsePos = function() {
+        // Skip if window is being moved or resized
+        if (this.isMoving || this.isResizing) return;
+
+        const parentWidth = this.ele.parentElement.clientWidth;
+        const parentHeight = this.ele.parentElement.clientHeight;
+        
+        // Calculate margins for all sides
+        const leftMargin = WIN_AREA_MARGIN_LEFT + this.margin;
+        const rightMargin = WIN_AREA_MARGIN_RIGHT + this.margin;
+        const topMargin = WIN_AREA_MARGIN_TOP + this.margin;
+        const bottomMargin = WIN_AREA_MARGIN_BOTTOM + this.margin;
+
+        // Fix X position based on anchor
+        if (this.anchor.toUpperCase().indexOf("R") != -1) {
+            // For right anchor
+            if (this.offsetX < rightMargin) {
+                this.offsetX = rightMargin;
+            }
+            // Check left boundary (parentWidth - width - leftMargin)
+            if (this.offsetX > parentWidth - this.width - leftMargin) {
+                this.offsetX = parentWidth - this.width - leftMargin;
+            }
+            this.ele.style.right = this.offsetX + "px";
+        } else if (this.anchor.toUpperCase().indexOf("L") != -1) {
+            // For left anchor
+            if (this.offsetX < leftMargin) {
+                this.offsetX = leftMargin;
+            }
+            // Check right boundary
+            if (this.offsetX > parentWidth - this.width - rightMargin) {
+                this.offsetX = parentWidth - this.width - rightMargin;
+            }
+            this.ele.style.left = this.offsetX + "px";
+        }
+
+        // Fix Y position based on anchor
+        if (this.anchor.toUpperCase().indexOf("B") != -1) {
+            // For bottom anchor
+            if (this.offsetY < bottomMargin) {
+                this.offsetY = bottomMargin;
+            }
+            // Check top boundary
+            if (this.offsetY > parentHeight - this.height - topMargin) {
+                this.offsetY = parentHeight - this.height - topMargin;
+            }
+            this.ele.style.bottom = this.offsetY + "px";
+        } else if (this.anchor.toUpperCase().indexOf("T") != -1) {
+            // For top anchor
+            if (this.offsetY < topMargin) {
+                this.offsetY = topMargin;
+            }
+            // Check bottom boundary
+            if (this.offsetY > parentHeight - this.height - bottomMargin) {
+                this.offsetY = parentHeight - this.height - bottomMargin;
+            }
+            this.ele.style.top = this.offsetY + "px";
+        }
+    }.bind(this);
+
+    // Add event listeners
+    this.header.addEventListener('mousedown', this.startDrag);
     for (let grip of this.grips) {
         grip.addEventListener('mousedown', this.startResize);
     }
-    this.header.addEventListener('mousedown', this.startDrag);
-    window.addEventListener('mouseup', this.stopAction);
     window.addEventListener('mousemove', this.windowMouseMove);
-
-    this.fixFalsePos = function() {
-        // Todo: move windows into the viewable area
-    }.bind(this);
+    window.addEventListener('mouseup', this.stopAction);
 }
 
 function InitAllMovableWindows() {
