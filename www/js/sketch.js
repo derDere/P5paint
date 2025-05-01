@@ -168,7 +168,7 @@ function setup() {
   drawCenterCb = createCheckbox('Show Center', true);
   drawCenterCb.parent('menu');
   
-  drawGridCb = createCheckbox('10px Grid', true);
+  drawGridCb = createCheckbox('Page', true);
   drawGridCb.parent('menu');
   
   createSpan("Zoom:").parent('menu');
@@ -225,25 +225,20 @@ function draw() {
   
   push();
   translate(width / 2, height / 2);
-  
-  //if (drawGridCb.checked()) {
-  //  push();
-  //  scale(zoomSlider.value());
-  //  noStroke();
-  //  fill(255 - red(bgc), 255 - green(bgc), 255 - blue(bgc), 24);
-  //  for(let x = -600; x < 600; x += 10) {
-  //    for(let y = -600; y < 600; y += 10) {
-  //      if ( ((x + y) % 20) == 0) {
-  //        rect(x, y, 10, 10); 
-  //      }
-  //    } 
-  //  }
-  //  pop();
-  //}
 
   push();
   scale(zoomSlider.value());
   translate(viewPanningX, viewPanningY);
+  
+  if (drawGridCb.checked()) {
+    push();
+    rectMode(CENTER);
+    stroke(192);
+    strokeWeight(1);
+    fill(255);
+    rect(0, 0, 400, 300, 5);
+    pop();
+  }
   
   if (objList?.getSelected()?.anchors) {
     for(let anchor of objList.getSelected().anchors) {
