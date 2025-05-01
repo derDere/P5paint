@@ -13,35 +13,6 @@ div#main-content {
   scrollbar-width: thin;
 }
 
-#menu > div {
-  display: inline-block;
-  margin: 0 20px 0 0;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-#menu > div:hover {
-  background: #E0F0FF;
-}
-
-#menu > div label input,
-#menu > div label span{
-  user-select: none;
-  cursor: pointer;
-}
-
-#menu {
-  user-select: none;
-}
-
-#menu input {
-  vertical-align: middle;
-}
-
-#menu > button {
-  margin: 0 20px 0 0;
-}
-
 #datenschutz {
   position: absolute;
   top: 50px;
@@ -137,13 +108,13 @@ div#main-canvas {
   border-radius: 4px;
   box-sizing: border-box;
 }
-  div#main-canvas.grid-on {
+  .grid-on div#main-canvas {
     background: url(../gfx/grid_bg.png) repeat center center;
   }
-  div#main-canvas.grid-dot {
+  .grid-dot div#main-canvas {
     background: url(../gfx/grid_dot_bg.png) repeat center center;
   }
-  div#main-canvas.grid-off {
+  .grid-off div#main-canvas {
     background: #fff;
   }
 

@@ -1,0 +1,79 @@
+.menu-button {
+    height: 23px;
+    min-width: 23px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.menu-button:hover {
+    border-color: #348afa;
+    scale: 1.1;
+}
+
+.menu-button:active {
+    scale: 0.95;
+}
+
+.menu-button.save-button {
+    background: url(../gfx/save_ico.png) no-repeat center center, #F0F0F0;
+}
+
+.menu-button.load-button {
+    background: url(../gfx/open_ico.png) no-repeat center center, #F0F0F0;
+}
+
+.grid-on .menu-button.grid-button {
+    background: url(../gfx/grid.png) no-repeat center center, #F0F0F0;
+}
+.grid-dot .menu-button.grid-button {
+    background: url(../gfx/grid_dot.png) no-repeat center center, #F0F0F0;
+}
+.grid-off .menu-button.grid-button {
+    background: url(../gfx/grid_none.png) no-repeat center center, #F0F0F0;
+}
+
+.menu-button.show-center-button {
+    background: url(../gfx/center_cross.png) no-repeat center center, #F0F0F0;
+}
+.menu-button.show-center-button.disabled {
+    /* blur and grayscale filter */
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
+
+/*
+
+#menu > div {
+  display: inline-block;
+  margin: 0 20px 0 0;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#menu > div:hover {
+  background: #E0F0FF;
+}
+
+#menu > div label input,
+#menu > div label span{
+  user-select: none;
+  cursor: pointer;
+}
+
+#menu {
+  user-select: none;
+}
+
+#menu input {
+  vertical-align: middle;
+}
+
+#menu > button {
+  margin: 0 20px 0 0;
+}
+
+*/

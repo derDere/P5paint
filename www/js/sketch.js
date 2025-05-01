@@ -12,7 +12,7 @@ var saveBtn;
 var loadBtn;
 var oldCode = '';
 var eleNum = 1;
-
+var mainMenu;
 var viewPanningX = 0;
 var viewPanningY = 0;
 var viewPanningMovementMouseX = 0;
@@ -112,8 +112,20 @@ function setup() {
   anchorSelector = new PaintAnchorSelection();
   
   objList.addSelectedHandler(objProps.setObject);
+
+  mainMenu = new MainMenu('menu');
   
-  saveBtn = createButton('💾');
+  mainMenu.onSaveBtnClick(() => {
+    let jj = JSON.stringify(objList.getJson(), null, 2);
+    let blob = new Blob([jj], { type: 'application/json' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'PaintSketch.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+  /*saveBtn = createButton('💾');
   saveBtn.mousePressed(() => {
     let jj = JSON.stringify(objList.getJson(), null, 2);
     let blob = new Blob([jj], { type: 'application/json' });
@@ -124,9 +136,46 @@ function setup() {
     a.click();
     URL.revokeObjectURL(url);
   });
-  saveBtn.parent('menu');
+  saveBtn.parent('menu');*/
 
-  loadBtn = createButton('📂');
+  mainMenu.onLoadBtnClick(() => {
+    // Only show save confirmation if there are objects in the scene
+    if (objList.items().length === 0 || confirm('Did you save?!')) {
+      let i = document.createElement('input');
+      i.type = 'file';
+      i.accept = '.json,application/json';
+
+      i.onchange = e => {
+        let file = e.target.files[0];
+        if (!file) return;
+
+        let reader = new FileReader();
+        reader.onload = e => {
+          let jj = e.target.result;
+          let jo = JSON.parse(jj);   
+          for (let key of Object.keys(objList.allObjects)) {
+            if (key == NONE_ITM) continue;
+            objList.remove(key);
+          }
+          jo.sort((a, b) => a.zIndex - b.zIndex);
+          for (let itm of jo) {
+            if (itm.TypeName in PaintObjectTypes) {
+              let oo = new PaintObjectTypes[itm.TypeName]();
+              oo.loadJJ(itm);
+              objList.add(oo);
+            }
+          }
+          viewPanningX = 0;
+          viewPanningY = 0;
+        };
+        reader.readAsText(file);
+      };
+
+      i.click();
+    }
+  });
+
+  /*loadBtn = createButton('📂');
   loadBtn.mousePressed(() => {
     // Only show save confirmation if there are objects in the scene
     if (objList.items().length === 0 || confirm('Did you save?!')) {
@@ -163,10 +212,10 @@ function setup() {
       i.click();
     }
   });
-  loadBtn.parent('menu');
+  loadBtn.parent('menu');*/
   
-  drawCenterCb = createCheckbox('Show Center', true);
-  drawCenterCb.parent('menu');
+  /*drawCenterCb = createCheckbox('Show Center', true);
+  drawCenterCb.parent('menu');*/
   
   drawGridCb = createCheckbox('Page', true);
   drawGridCb.parent('menu');
@@ -287,7 +336,7 @@ function draw() {
     oldCode = newCode;
   }
   
-  if (drawCenterCb.checked()) {
+  if (mainMenu.showCenter) {
     push();
     translate(width / 2, height / 2);
     translate(viewPanningX * zoomSlider.value(), viewPanningY * zoomSlider.value());

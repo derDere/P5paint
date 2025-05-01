@@ -9,12 +9,13 @@
     <link rel="stylesheet" type="text/css" href="css/properties.css">
     <link rel="stylesheet" type="text/css" href="css/code.css">
     <link rel="stylesheet" type="text/css" href="css/object-tree.css">
+    <link rel="stylesheet" type="text/css" href="css/main-menu.css">
     <link rel="stylesheet" type="text/css" href="css/fastcounter.css">
     <link rel="stylesheet" type="text/css" href="css/movables.css">
     <meta charset="utf-8" />
   </head>
   <body>
-    <div id="main-content">
+    <div id="main-content" class="grid-on">
 
       <div class="menu">
 
@@ -34,7 +35,7 @@
 
       </div>
 
-      <div id="main-canvas" class="grid-on"></div>
+      <div id="main-canvas"></div>
 
       <div class="movable-window" data-title="Objects" data-icon="gfx/layers_stack.png" data-anchor="BL" data-width="300" data-height="400" data-m="20">
           <div class="window-content" id="object-list"></div>
@@ -44,7 +45,7 @@
           <div class="window-content" id="property-grid"></div>
       </div>
 
-      <div class="movable-window" data-title="Code Generator" data-icon="gfx/code_ico.png" data-anchor="BR" data-width="500" data-height="200" data-m="20">
+      <div class="movable-window" data-title="Code Generator" data-icon="gfx/code_ico.png" data-anchor="BR" data-width="600" data-height="300" data-m="20">
           <div class="window-content" id="code">
             <textarea id="code-content" readonly="readonly"></textarea>
           </div>
@@ -68,6 +69,7 @@
       }
     </script>
     <script src="js/movables.js"></script>
+    <script src="js/main-menu.js"></script>
     <script src="js/paint_anchor.js"></script>
     <script src="js/paint_object.js"></script>
     <script src="js/paint_object_list.js"></script>
