@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=www/">
+    <title>Redirecting to P5paint</title>
+    <script>
+        // JavaScript fallback if meta refresh doesn't work
+        window.onload = function() {
+            window.location.href = 'www/';
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .redirect-link {
+            font-size: 24px;
+            color: #0066cc;
+            text-decoration: none;
+            padding: 20px;
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .redirect-link:hover {
+            background-color: #0066cc;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML fallback if both meta refresh and JavaScript fail -->
+    <a href="www/" class="redirect-link">Go to P5paint Application</a>
+</body>
+</html>
