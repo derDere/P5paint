@@ -1,24 +1,15 @@
 var objList;
 var objProps;
 var anchorSelector;
-//var drawCenterCb;
-//var drawGridCb;
-//var zoomSlider;
-//var zoomReset;
-//var bgColorPicker;
 var codeBox;
 var copyCodeBtn;
-//var saveBtn;
-//var loadBtn;
 var oldCode = '';
-var eleNum = 1;
 var mainMenu;
 var viewPanningX = 0;
 var viewPanningY = 0;
 var viewPanningMovementMouseX = 0;
 var viewPanningMovementMouseY = 0;
 var viewPanningMovement = false;
-//var viewPanningCenterBtn;
 var lastWinSize = { width: 0, height: 0 };
 
 function copyCode() {
@@ -125,18 +116,6 @@ function setup() {
     a.click();
     URL.revokeObjectURL(url);
   });
-  /*saveBtn = createButton('💾');
-  saveBtn.mousePressed(() => {
-    let jj = JSON.stringify(objList.getJson(), null, 2);
-    let blob = new Blob([jj], { type: 'application/json' });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = 'PaintSketch.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-  saveBtn.parent('menu');*/
 
   mainMenu.onLoadBtnClick(() => {
     // Only show save confirmation if there are objects in the scene
@@ -175,70 +154,6 @@ function setup() {
     }
   });
 
-  /*loadBtn = createButton('📂');
-  loadBtn.mousePressed(() => {
-    // Only show save confirmation if there are objects in the scene
-    if (objList.items().length === 0 || confirm('Did you save?!')) {
-      let i = document.createElement('input');
-      i.type = 'file';
-      i.accept = '.json,application/json';
-
-      i.onchange = e => {
-        let file = e.target.files[0];
-        if (!file) return;
-
-        let reader = new FileReader();
-        reader.onload = e => {
-          let jj = e.target.result;
-          let jo = JSON.parse(jj);   
-          for (let key of Object.keys(objList.allObjects)) {
-            if (key == NONE_ITM) continue;
-            objList.remove(key);
-          }
-          jo.sort((a, b) => a.zIndex - b.zIndex);
-          for (let itm of jo) {
-            if (itm.TypeName in PaintObjectTypes) {
-              let oo = new PaintObjectTypes[itm.TypeName]();
-              oo.loadJJ(itm);
-              objList.add(oo);
-            }
-          }
-          viewPanningX = 0;
-          viewPanningY = 0;
-        };
-        reader.readAsText(file);
-      };
-
-      i.click();
-    }
-  });
-  loadBtn.parent('menu');*/
-  
-  /*drawCenterCb = createCheckbox('Show Center', true);
-  drawCenterCb.parent('menu');*/
-  
-  /*drawGridCb = createCheckbox('Page', true);
-  drawGridCb.parent('menu');*/
-  
-  /*createSpan("Zoom:").parent('menu');
-  
-  zoomSlider = createSlider(0.5, 5, 1, 0.1);
-  zoomSlider.parent('menu');
-  
-  zoomReset = createButton('100%');
-  zoomReset.mousePressed(() => zoomSlider.value(1));
-  zoomReset.parent('menu');
-
-  viewPanningCenterBtn = createButton('Center View');
-  viewPanningCenterBtn.mousePressed(() => {
-    viewPanningX = 0;
-    viewPanningY = 0;
-  });
-  viewPanningCenterBtn.parent('menu');
-  
-  bgColorPicker = createColorPicker('white');
-  bgColorPicker.parent('menu');*/
-
   windowResized();
 }
 
@@ -273,8 +188,6 @@ function draw() {
 
   anchorSelector.update(objList?.getSelected());
 
-  //let bgc = color('' + bgColorPicker.value());
-  //background(bgc);
   clear();
   background(0, 0, 0, 0);
   

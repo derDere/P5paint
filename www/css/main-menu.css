@@ -195,36 +195,3 @@
 #page-editor {
   padding: 10px 0;
 }
-
-/*
-
-#menu > div {
-  display: inline-block;
-  margin: 0 20px 0 0;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-#menu > div:hover {
-  background: #E0F0FF;
-}
-
-#menu > div label input,
-#menu > div label span{
-  user-select: none;
-  cursor: pointer;
-}
-
-#menu {
-  user-select: none;
-}
-
-#menu input {
-  vertical-align: middle;
-}
-
-#menu > button {
-  margin: 0 20px 0 0;
-}
-
-*/

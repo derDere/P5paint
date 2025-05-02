@@ -360,7 +360,6 @@ function MainMenu(id) {
             showRulers: this.showRulers,
             pageSize: this.pageSize,
             pageColor: this.pageColor,
-            zoom: this.zoom,
             grid: gridValue,
             bgColor: bgColor,
         };
@@ -378,16 +377,12 @@ function MainMenu(id) {
             this.showRulers = settings.showRulers;
             this.pageSize = settings.pageSize;
             this.pageColor = settings.pageColor;
-            this.zoom = settings.zoom;
 
             // update menu elements
             this.bgColorPicker.value = settings.bgColor;
             this.pageColorPicker.value = this.pageColor;
             this.pageSizeW.value = this.pageSize.w;
             this.pageSizeH.value = this.pageSize.h;
-            this.zoomSlider.value = this.zoom;
-            this.zoomPreview.innerText = round(this.zoom * 100) + '%';
-            this.zoomSlider.title = 'Zoom level: ' + this.zoom.toFixed(2) + 'x';
             this.showCenterBtn.classList.toggle('disabled', !this.showCenter);
             this.showPageBtn.classList.toggle('disabled', !this.showPage);
             this.showRulersBtn.classList.toggle('disabled', !this.showRulers);
