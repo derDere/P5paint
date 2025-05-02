@@ -1,6 +1,6 @@
 # P5paint - Visual Shape Editor for Processing Python Mode
 
-![P5paint Screenshot](screenshot2.png)
+![P5paint Screenshot](screenshot3.png)
 
 A visual design tool that helps create complex shapes and graphics for Processing Python Mode applications by providing a real-time code generator.
 
