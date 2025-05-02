@@ -2,6 +2,18 @@ const MIN_ZOOM = 0.125; // 1/8
 const MAX_ZOOM = 8.0; // 8x
 const ZOOM_STEP = 0.125; // 1/8
 
+function cssRgbToHex(color) {
+    // Convert CSS rgb color to hex color
+    let rgb = color.match(/\d+/g);
+    if (rgb) {
+        let r = parseInt(rgb[0]);
+        let g = parseInt(rgb[1]);
+        let b = parseInt(rgb[2]);
+        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+    return color;
+}
+
 function MainMenu(id) {
     // source properties
     this.id = id;
@@ -11,7 +23,7 @@ function MainMenu(id) {
     this.showCenter = true;
     this.showPage = true;
     this.showRulers = true;
-    this.rulerSize = {w:400, h:300};
+    this.pageSize = {w:400, h:300};
     this.pageColor = '#ffffff'; // default white background
     this.zoom = 1.0;
 
@@ -137,8 +149,10 @@ function MainMenu(id) {
         let pageEditorWin = document.getElementById('page-editor-win');
         if (pageEditorWin.classList.contains('hidden')) {
             pageEditorWin.classList.remove('hidden');
+            this.editPageBtn.classList.add('active');
         } else {
             pageEditorWin.classList.add('hidden');
+            this.editPageBtn.classList.remove('active');
         }
     }.bind(this);
     this.editPageBtn.addEventListener('click', this._editPageButtonClickHandler);
@@ -152,7 +166,7 @@ function MainMenu(id) {
     this.pageSizeW = document.createElement('input');
     this.pageSizeW.type = 'number';
     this.pageSizeW.className = 'menu-number-input page-size-w';
-    this.pageSizeW.value = this.rulerSize.w;
+    this.pageSizeW.value = this.pageSize.w;
     this.pageSizeW.title = 'Page width (px)';
     this.pageSizeW.min = 0;
     this.pageSizeW.max = 10000;
@@ -165,8 +179,8 @@ function MainMenu(id) {
         } else if (value > 10000) {
             value = 10000;
         }
-        this.rulerSize.w = value;
-        this.pageSizeW.value = this.rulerSize.w;
+        this.pageSize.w = value;
+        this.pageSizeW.value = this.pageSize.w;
     }.bind(this);
     this.pageSizeW.addEventListener('input', this._pageSizeWChangeHandler);
 
@@ -179,7 +193,7 @@ function MainMenu(id) {
     this.pageSizeH = document.createElement('input');
     this.pageSizeH.type = 'number';
     this.pageSizeH.className = 'menu-number-input page-size-h';
-    this.pageSizeH.value = this.rulerSize.h;
+    this.pageSizeH.value = this.pageSize.h;
     this.pageSizeH.title = 'Page height (px)';
     this.pageSizeH.min = 0;
     this.pageSizeH.max = 10000;
@@ -192,8 +206,8 @@ function MainMenu(id) {
         } else if (value > 10000) {
             value = 10000;
         }
-        this.rulerSize.h = value;
-        this.pageSizeH.value = this.rulerSize.h;
+        this.pageSize.h = value;
+        this.pageSizeH.value = this.pageSize.h;
     }.bind(this);
     this.pageSizeH.addEventListener('input', this._pageSizeHChangeHandler);
 
@@ -227,11 +241,11 @@ function MainMenu(id) {
     this.pageResetBtn.innerText = 'Reset to default';
     pageEditorDiv.appendChild(this.pageResetBtn);
     this._pageResetButtonClickHandler = function() {
-        this.rulerSize.w = 400;
-        this.rulerSize.h = 300;
+        this.pageSize.w = 400;
+        this.pageSize.h = 300;
         this.pageColor = '#ffffff'; // default white background
-        this.pageSizeW.value = this.rulerSize.w;
-        this.pageSizeH.value = this.rulerSize.h;
+        this.pageSizeW.value = this.pageSize.w;
+        this.pageSizeH.value = this.pageSize.h;
         this.pageColorPicker.value = this.pageColor;
     }.bind(this);
     this.pageResetBtn.addEventListener('click', this._pageResetButtonClickHandler);
@@ -339,12 +353,12 @@ function MainMenu(id) {
         if (document.getElementById('main-content').classList.contains('grid-dot')) {
             gridValue = 'grid-dot';
         }
-        let bgColor = document.getElementById('main-canvas').style.backgroundColor;
+        let bgColor = cssRgbToHex(document.getElementById('main-canvas').style.backgroundColor || '#ffffff');
         let settings = {
             showCenter: this.showCenter,
             showPage: this.showPage,
             showRulers: this.showRulers,
-            rulerSize: this.rulerSize,
+            pageSize: this.pageSize,
             pageColor: this.pageColor,
             zoom: this.zoom,
             grid: gridValue,
@@ -362,15 +376,15 @@ function MainMenu(id) {
             this.showCenter = settings.showCenter;
             this.showPage = settings.showPage;
             this.showRulers = settings.showRulers;
-            this.rulerSize = settings.rulerSize;
+            this.pageSize = settings.pageSize;
             this.pageColor = settings.pageColor;
             this.zoom = settings.zoom;
 
             // update menu elements
             this.bgColorPicker.value = settings.bgColor;
             this.pageColorPicker.value = this.pageColor;
-            this.pageSizeW.value = this.rulerSize.w;
-            this.pageSizeH.value = this.rulerSize.h;
+            this.pageSizeW.value = this.pageSize.w;
+            this.pageSizeH.value = this.pageSize.h;
             this.zoomSlider.value = this.zoom;
             this.zoomPreview.innerText = round(this.zoom * 100) + '%';
             this.zoomSlider.title = 'Zoom level: ' + this.zoom.toFixed(2) + 'x';

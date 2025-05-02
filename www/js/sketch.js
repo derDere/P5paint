@@ -73,8 +73,8 @@ function PointViewToReal(x, y) {
 function getMainCanvasSize() {
   let div = document.getElementById('main-canvas');
   return {
-    width: div.clientWidth - 2,
-    height: div.clientHeight - 2
+    width: div.clientWidth,
+    height: div.clientHeight
   };
 }
 
@@ -290,14 +290,55 @@ function draw() {
     push();
     fill(0,0,0,14);
     translate(2, 2);
-    rect(0, 0, mainMenu.rulerSize.w + 8, mainMenu.rulerSize.h + 8, 7);
-    rect(0, 0, mainMenu.rulerSize.w + 6, mainMenu.rulerSize.h + 6, 7);
-    rect(0, 0, mainMenu.rulerSize.w + 4, mainMenu.rulerSize.h + 4, 6);
-    rect(0, 0, mainMenu.rulerSize.w + 2, mainMenu.rulerSize.h + 2, 6);
-    rect(0, 0, mainMenu.rulerSize.w , mainMenu.rulerSize.h, 5);
+    rect(0, 0, mainMenu.pageSize.w + 8, mainMenu.pageSize.h + 8, 2);
+    rect(0, 0, mainMenu.pageSize.w + 6, mainMenu.pageSize.h + 6, 2);
+    rect(0, 0, mainMenu.pageSize.w + 4, mainMenu.pageSize.h + 4, 1);
+    rect(0, 0, mainMenu.pageSize.w + 2, mainMenu.pageSize.h + 2, 1);
+    rect(0, 0, mainMenu.pageSize.w , mainMenu.pageSize.h, 0);
     pop();
     fill(mainMenu.pageColor);
-    rect(0, 0, mainMenu.rulerSize.w, mainMenu.rulerSize.h, 5);
+    rect(0, 0, mainMenu.pageSize.w, mainMenu.pageSize.h, 0);
+    pop();
+  }
+
+  if (mainMenu.showRulers) {
+    push();
+    stroke(128, 128, 128, 192);
+    strokeWeight(2);
+    strokeCap(SQUARE);
+
+    line(-(mainMenu.pageSize.w / 2) + 2, -(mainMenu.pageSize.h / 2) - 10, (mainMenu.pageSize.w / 2) - 2, -(mainMenu.pageSize.h / 2) - 10);
+    line(-(mainMenu.pageSize.w / 2) + 1, -(mainMenu.pageSize.h / 2), -(mainMenu.pageSize.w / 2) + 1, -(mainMenu.pageSize.h / 2) - 20,);
+    line((mainMenu.pageSize.w / 2) - 1, -(mainMenu.pageSize.h / 2), (mainMenu.pageSize.w / 2) - 1, -(mainMenu.pageSize.h / 2) - 20,);
+
+    line(-(mainMenu.pageSize.w / 2) - 10, -(mainMenu.pageSize.h / 2) + 2, -(mainMenu.pageSize.w / 2) - 10, (mainMenu.pageSize.h / 2) - 2);
+    line(-(mainMenu.pageSize.w / 2), -(mainMenu.pageSize.h / 2) + 1, -(mainMenu.pageSize.w / 2) - 20, -(mainMenu.pageSize.h / 2) + 1);
+    line(-(mainMenu.pageSize.w / 2), (mainMenu.pageSize.h / 2) - 1, -(mainMenu.pageSize.w / 2) - 20, (mainMenu.pageSize.h / 2) - 1);
+
+    let mousePosCanvas = PointRealToView(mouseX, mouseY);
+
+    let rulerMousePosX = round(mousePosCanvas.x) + (mainMenu.pageSize.w / 2);
+    let rulerMouseDrawPosX = Math.min(Math.max(rulerMousePosX, 1), mainMenu.pageSize.w - 1);
+    let mouseDisplayOffsetY = 15;
+    line(-(mainMenu.pageSize.w / 2) + rulerMouseDrawPosX, -(mainMenu.pageSize.h / 2), -(mainMenu.pageSize.w / 2) + rulerMouseDrawPosX, -(mainMenu.pageSize.h / 2) - (20 + mouseDisplayOffsetY),);
+
+    let rulerMousePosY = round(mousePosCanvas.y) + (mainMenu.pageSize.h / 2);
+    let rulerMouseDrawPosY = Math.min(Math.max(rulerMousePosY, 1), mainMenu.pageSize.h - 1);
+    let mouseDisplayOffsetX = 10 + (('' + mainMenu.pageSize.h).length * 7);
+    line(-(mainMenu.pageSize.w / 2), -(mainMenu.pageSize.h / 2) + rulerMouseDrawPosY, -(mainMenu.pageSize.w / 2) - (20 + mouseDisplayOffsetX), -(mainMenu.pageSize.h / 2) + rulerMouseDrawPosY);
+
+    textSize(12);
+    textAlign(CENTER, BOTTOM);
+    noStroke();
+    fill(128, 128, 128, 255);
+
+    text(`${mainMenu.pageSize.w} px`, 0, -(mainMenu.pageSize.h / 2) - 12);
+    text(`${rulerMousePosX} px\n${round(mousePosCanvas.x)} px`, -(mainMenu.pageSize.w / 2) + rulerMouseDrawPosX, -(mainMenu.pageSize.h / 2) - (22 + mouseDisplayOffsetY));
+
+    textAlign(RIGHT, CENTER);
+    text(`${mainMenu.pageSize.h} px`, -(mainMenu.pageSize.w / 2) - 12, 0);
+    text(`${rulerMousePosY} px\n${round(mousePosCanvas.y)} px`, -(mainMenu.pageSize.w / 2) - (22 + mouseDisplayOffsetX), -(mainMenu.pageSize.h / 2) + rulerMouseDrawPosY);
+
     pop();
   }
   
