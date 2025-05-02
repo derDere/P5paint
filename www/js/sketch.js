@@ -4,7 +4,8 @@ var anchorSelector;
 var codeBox;
 var copyCodeBtn;
 var oldCode = '';
-var eleNum = 1;
+//var eleNum = 1;
+var toolMenu;
 var mainMenu;
 var viewPanningX = 0;
 var viewPanningY = 0;
@@ -106,6 +107,9 @@ function setup() {
   anchorSelector = new PaintAnchorSelection();
   
   objList.addSelectedHandler(objProps.setObject);
+
+  AddOldTools();
+  toolMenu = new ToolMenu();
 
   mainMenu = new MainMenu('menu');
   

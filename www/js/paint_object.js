@@ -100,9 +100,9 @@ function PaintObjectBase(id) {
   this.scaleX = 1;
   this.scaleY = 1;
   this.noFill = false;
-  this.fill = 0x7FDCDCDC;
+  this.fill = 0xFFA8CFFF;
   this.noStroke = false;
-  this.stroke = 0xFF000000;
+  this.stroke = 0xFF0026FF;
   this.strokeWeight = 1;
   this.strokeCap = 'ROUND';
   this.strokeJoin = 'MITER';

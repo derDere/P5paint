@@ -318,7 +318,8 @@ function PaintObjectProperties() {
 
   this.setObject = function(o) {
     if (!o) {
-      this.table.innerHTML = '<tr><td align="center"><b>Add a new Object</b></td></tr>';
+      this.table.innerHTML = '';
+      /*this.table.innerHTML = '<tr><td align="center"><b>Add a new Object</b></td></tr>';
       for (let ptype in PaintObjectTypes) {
         let tr = this.table.appendChild(document.createElement('tr'));
         let td = tr.appendChild(document.createElement('td'));
@@ -329,7 +330,7 @@ function PaintObjectProperties() {
         btn.addEventListener('click', () => {
           objList.add(new PaintObjectTypes[ptype](ptype + ' (' + (eleNum++) + ')'));
         });
-      }
+      }*/
       let tr = this.table.appendChild(document.createElement('tr'));
       let td = tr.appendChild(document.createElement('td'));
       td.className = "empty-qm";

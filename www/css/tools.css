@@ -1,0 +1,33 @@
+.tool-button {
+    display: inline-block;
+    height: 23px;
+    min-width: 23px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    vertical-align: middle;
+    cursor: pointer;
+    margin: 10px 0px 0px 10px;
+    background-color: #F0F0F0;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+  .tool-button:hover {
+      border-color: #348afa;
+      /*scale: 1.1;*/
+  }
+
+  .tool-button:active {
+      scale: 0.95;
+  }
+
+  .tool-button.disabled {
+      filter: grayscale(1);
+      opacity: 0.5;
+  }
+
+  .tool-button.active {
+      background-color: #b3d2f0 !important;
+      border-color: #348afa;
+      border-width: 2px;
+  }
