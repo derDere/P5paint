@@ -4,6 +4,7 @@ var anchorSelector;
 var codeBox;
 var copyCodeBtn;
 var oldCode = '';
+var eleNum = 1;
 var mainMenu;
 var viewPanningX = 0;
 var viewPanningY = 0;
@@ -297,7 +298,9 @@ function draw() {
   
   newCode += '    ' + lines.join('\n    ');
   if (newCode != oldCode) {
-    codeBox.innerHTML = newCode;
+    // Update code and trigger Prism highlighting
+    codeBox.textContent = newCode; // Use textContent instead of innerHTML for security
+    Prism.highlightElement(codeBox);
     oldCode = newCode;
   }
   
