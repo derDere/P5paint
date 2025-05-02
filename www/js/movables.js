@@ -156,6 +156,7 @@ function MovableWindow(ele) {
     this.miniBtn.addEventListener('click', this.toggleMinimize);
 
     this.stopAction = function(e) {
+        if (!this.isMoving && !this.isResizing) return;
         e.preventDefault();
         e.stopPropagation();
         this.isMoving = false;
@@ -362,5 +363,5 @@ function InitAllMovableWindows() {
         }
     };
 
-    setInterval(fixAllFalsePos, 1000);
+    setInterval(fixAllFalsePos, 200);
 }

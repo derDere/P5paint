@@ -81,16 +81,6 @@ div#top-links {
       text-decoration: underline;
     }
 
-div#menu {
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  margin-left: -400px;
-  width: 800px;
-  height: 30px;
-  line-height: 30px;
-}
-
 div#fastcounter {
   position: absolute;
   top: 0;
@@ -103,19 +93,27 @@ div#main-canvas {
   left: 0;
   width: 100%;
   height: calc(100% - 50px);
-  background: #F5F5F5;
+  /*background: #F5F5F5;*/
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+
+  background-position: center center;
+  background-repeat: repeat;
+  background-color: #fff;
+
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
   .grid-on div#main-canvas {
-    background: url(../gfx/grid_bg.png) repeat center center;
+    background-image: url(../gfx/grid_bg.png);
   }
   .grid-dot div#main-canvas {
-    background: url(../gfx/grid_dot_bg.png) repeat center center;
+    background-image: url(../gfx/grid_dot_bg.png);
   }
   .grid-off div#main-canvas {
-    background: #fff;
+    background-image: none;
   }
 
 div#main-canvas canvas {

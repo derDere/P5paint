@@ -1,15 +1,15 @@
 var objList;
 var objProps;
 var anchorSelector;
-var drawCenterCb;
-var drawGridCb;
-var zoomSlider;
-var zoomReset;
-var bgColorPicker;
+//var drawCenterCb;
+//var drawGridCb;
+//var zoomSlider;
+//var zoomReset;
+//var bgColorPicker;
 var codeBox;
 var copyCodeBtn;
-var saveBtn;
-var loadBtn;
+//var saveBtn;
+//var loadBtn;
 var oldCode = '';
 var eleNum = 1;
 var mainMenu;
@@ -18,7 +18,7 @@ var viewPanningY = 0;
 var viewPanningMovementMouseX = 0;
 var viewPanningMovementMouseY = 0;
 var viewPanningMovement = false;
-var viewPanningCenterBtn;
+//var viewPanningCenterBtn;
 var lastWinSize = { width: 0, height: 0 };
 
 function copyCode() {
@@ -52,7 +52,7 @@ function PointRealToView(x, y) {
   }
   let p = createVector(x, y);
   p.sub(width / 2, height / 2)
-  p.div(zoomSlider.value());
+  p.div(mainMenu.zoom);
   p.sub(viewPanningX, viewPanningY);
   return p;
 }
@@ -65,7 +65,7 @@ function PointViewToReal(x, y) {
   }
   let p = createVector(x, y);
   p.add(viewPanningX, viewPanningY);
-  p.mult(zoomSlider.value());
+  p.mult(mainMenu.zoom);
   p.add(width / 2, height / 2);
   return p;
 }
@@ -73,8 +73,8 @@ function PointViewToReal(x, y) {
 function getMainCanvasSize() {
   let div = document.getElementById('main-canvas');
   return {
-    width: div.clientWidth,
-    height: div.clientHeight
+    width: div.clientWidth - 2,
+    height: div.clientHeight - 2
   };
 }
 
@@ -217,10 +217,10 @@ function setup() {
   /*drawCenterCb = createCheckbox('Show Center', true);
   drawCenterCb.parent('menu');*/
   
-  drawGridCb = createCheckbox('Page', true);
-  drawGridCb.parent('menu');
+  /*drawGridCb = createCheckbox('Page', true);
+  drawGridCb.parent('menu');*/
   
-  createSpan("Zoom:").parent('menu');
+  /*createSpan("Zoom:").parent('menu');
   
   zoomSlider = createSlider(0.5, 5, 1, 0.1);
   zoomSlider.parent('menu');
@@ -237,7 +237,9 @@ function setup() {
   viewPanningCenterBtn.parent('menu');
   
   bgColorPicker = createColorPicker('white');
-  bgColorPicker.parent('menu');
+  bgColorPicker.parent('menu');*/
+
+  windowResized();
 }
 
 function windowResized() {
@@ -252,18 +254,22 @@ function draw() {
 
   if (mouseIsPressed && mouseButton == CENTER) {
     if (viewPanningMovement) { 
-      viewPanningX = ((mouseX / zoomSlider.value()) - viewPanningMovementMouseX);
-      viewPanningY = ((mouseY / zoomSlider.value()) - viewPanningMovementMouseY);
+      viewPanningX = ((mouseX / mainMenu.zoom) - viewPanningMovementMouseX);
+      viewPanningY = ((mouseY / mainMenu.zoom) - viewPanningMovementMouseY);
     } else {
       viewPanningMovement = true;
-      viewPanningMovementMouseX = (mouseX / zoomSlider.value()) - viewPanningX;
-      viewPanningMovementMouseY = (mouseY / zoomSlider.value()) - viewPanningY;
+      viewPanningMovementMouseX = (mouseX / mainMenu.zoom) - viewPanningX;
+      viewPanningMovementMouseY = (mouseY / mainMenu.zoom) - viewPanningY;
     }
   } else {
     viewPanningMovement = false;
     viewPanningMovementMouseX = 0;
     viewPanningMovementMouseY = 0;
   }
+
+  let canvasDiv = document.getElementById('main-canvas');
+  canvasDiv.style.backgroundPosition = 'calc(50% + ' + round((viewPanningX - 50) * mainMenu.zoom) + 'px) calc(50% + ' + round((viewPanningY - 50) * mainMenu.zoom) + 'px)';
+  canvasDiv.style.backgroundSize = (round(mainMenu.zoom * 100)) + 'px';
 
   anchorSelector.update(objList?.getSelected());
 
@@ -274,18 +280,24 @@ function draw() {
   
   push();
   translate(width / 2, height / 2);
-
-  push();
-  scale(zoomSlider.value());
+  scale(mainMenu.zoom);
   translate(viewPanningX, viewPanningY);
   
-  if (drawGridCb.checked()) {
+  if (mainMenu.showPage) {
     push();
     rectMode(CENTER);
-    stroke(192);
-    strokeWeight(1);
-    fill(255);
-    rect(0, 0, 400, 300, 5);
+    noStroke();
+    push();
+    fill(0,0,0,14);
+    translate(2, 2);
+    rect(0, 0, mainMenu.rulerSize.w + 8, mainMenu.rulerSize.h + 8, 7);
+    rect(0, 0, mainMenu.rulerSize.w + 6, mainMenu.rulerSize.h + 6, 7);
+    rect(0, 0, mainMenu.rulerSize.w + 4, mainMenu.rulerSize.h + 4, 6);
+    rect(0, 0, mainMenu.rulerSize.w + 2, mainMenu.rulerSize.h + 2, 6);
+    rect(0, 0, mainMenu.rulerSize.w , mainMenu.rulerSize.h, 5);
+    pop();
+    fill(mainMenu.pageColor);
+    rect(0, 0, mainMenu.rulerSize.w, mainMenu.rulerSize.h, 5);
     pop();
   }
   
@@ -313,7 +325,6 @@ function draw() {
     }
   }
   pop();
-  pop();
   
   if (objList?.getSelected()?.anchors) {
     for(let anchor of objList.getSelected().anchors) {
@@ -339,15 +350,19 @@ function draw() {
   if (mainMenu.showCenter) {
     push();
     translate(width / 2, height / 2);
-    translate(viewPanningX * zoomSlider.value(), viewPanningY * zoomSlider.value());
+    translate(viewPanningX * mainMenu.zoom, viewPanningY * mainMenu.zoom);
     strokeWeight(3);
     strokeCap(ROUND);
-    stroke(255, 0, 0, 128);
+    if (viewPanningX == 0 && viewPanningY == 0) {
+      stroke(0, 255, 0, 128);
+    } else {
+      stroke(255, 0, 0, 128);
+    }
     noFill();
     line(0, -50, 0, 50);
     line(-50, 0, 50, 0);
     stroke(0, 255, 0, 128);
-    line(-viewPanningX * zoomSlider.value(), -viewPanningY * zoomSlider.value(), 0, 0);
+    line(-viewPanningX * mainMenu.zoom, -viewPanningY * mainMenu.zoom, 0, 0);
     pop();
   }
 }

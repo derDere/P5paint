@@ -3,6 +3,7 @@
     z-index: 1000;
     background-color: #fff;
     border: 1px solid #ccc;
+    /*border: 1px solid #3c5c7a;*/
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
     opacity: 0.9;
@@ -21,6 +22,10 @@
     bottom: 5px;
     overflow: auto;
     scrollbar-width: thin;
+}
+
+.minimized .window-content {
+    display: none;
 }
 
 div.movable-window-header {
@@ -80,13 +85,16 @@ div.movable-window-grip {
     width: 10px;
     height: 10px;
     background: #F5F5F5;
+    /*background: #5c99d3;*/
     cursor: pointer;
     border: 1px solid #ccc;
+    /*border: 1px solid #3c5c7a;*/
     border-radius: 4px;
 }
 
 div.movable-window-grip:hover {
     background: #fff;
+    background: #d7ebff;
 }
 
 .minimized div.movable-window-grip:hover {

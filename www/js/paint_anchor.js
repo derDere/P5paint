@@ -39,7 +39,7 @@ function PaintAnchor(x, y, c) {
       return;
     }
     let mp = PointRealToView(mouseX, mouseY);
-    let d = this.p.dist(mp) * zoomSlider.value();
+    let d = this.p.dist(mp) * mainMenu.zoom;
     if (d <= PAINT_ANCHOR_R) {
       this.hover = true;
     } else {
@@ -139,7 +139,7 @@ function PaintAnchorSelection() {
     }
     if (mouseIsPressed && mouseButton == LEFT) {
       if (!this.isDragging) {
-        if (!isOverAnchor) {
+        if (!isOverAnchor && mouseX > 0 && mouseY > 0 && mouseX < width && mouseY < height) {
           this.start = PointRealToView(mouseX, mouseY);
           this.isDragging = true;
         }
@@ -207,8 +207,8 @@ function PaintAnchorSelection() {
       let xy = PointViewToReal(x, y);
       x = xy.x;
       y = xy.y;
-      w = w * zoomSlider.value();
-      h = h * zoomSlider.value();
+      w = w * mainMenu.zoom;
+      h = h * mainMenu.zoom;
       rect(x, y, w, h);
     }
 
@@ -243,10 +243,10 @@ function PaintAnchorGroup() {
     let w = max(this.anchors.map(a => a.p.x)) - x;
     let h = max(this.anchors.map(a => a.p.y)) - y;
 
-    x = round(x - (20 / zoomSlider.value()));
-    y = round(y - (20 / zoomSlider.value()));
-    w = round(w + (40 / zoomSlider.value()));
-    h = round(h + (40 / zoomSlider.value()));
+    x = round(x - (20 / mainMenu.zoom));
+    y = round(y - (20 / mainMenu.zoom));
+    w = round(w + (40 / mainMenu.zoom));
+    h = round(h + (40 / mainMenu.zoom));
 
     return { x: x, y: y, w: w, h: h };
   }.bind(this);
@@ -264,10 +264,10 @@ function PaintAnchorGroup() {
   }.bind(this);
 
   this.containsPoint = function(p, margin_top=0, margin_right=0, margin_bottom=0, margin_left=0) {
-    margin_top /= zoomSlider.value();
-    margin_right /= zoomSlider.value();
-    margin_bottom /= zoomSlider.value();
-    margin_left /= zoomSlider.value();
+    margin_top /= mainMenu.zoom;
+    margin_right /= mainMenu.zoom;
+    margin_bottom /= mainMenu.zoom;
+    margin_left /= mainMenu.zoom;
 
     if (this.anchors.length <= 0) {
       return false;
@@ -489,10 +489,10 @@ function PaintAnchorGroup() {
 
     if (inRotationArea || this.isRotating || this.isMoving || this.isResizing) {
       if ((inActionArea && !inMoveArea && !this.isRotating) || this.isResizing) { // mouse is on border
-        this.topSide = this.containsPoint(mp, -2, -2, (h * zoomSlider.value()) - 10, -2) || this.topSide;
-        this.bottomSide = this.containsPoint(mp, (h * zoomSlider.value()) - 10, -2, -2, -2) || this.bottomSide;
-        this.leftSide = this.containsPoint(mp, -2, (w * zoomSlider.value()) -10, -2, -2) || this.leftSide;
-        this.rightSide = this.containsPoint(mp, -2, -2, -2, (w * zoomSlider.value()) - 10) || this.rightSide;
+        this.topSide = this.containsPoint(mp, -2, -2, (h * mainMenu.zoom) - 10, -2) || this.topSide;
+        this.bottomSide = this.containsPoint(mp, (h * mainMenu.zoom) - 10, -2, -2, -2) || this.bottomSide;
+        this.leftSide = this.containsPoint(mp, -2, (w * mainMenu.zoom) -10, -2, -2) || this.leftSide;
+        this.rightSide = this.containsPoint(mp, -2, -2, -2, (w * mainMenu.zoom) - 10) || this.rightSide;
 
         if (this.topSide && this.leftSide) {
           cursor('nwse-resize');
@@ -551,8 +551,8 @@ function PaintAnchorGroup() {
     let pos = PointViewToReal(x, y);
     x = pos.x;
     y = pos.y;
-    w = w * zoomSlider.value();
-    h = h * zoomSlider.value();
+    w = w * mainMenu.zoom;
+    h = h * mainMenu.zoom;
 
     push();
     noFill();
