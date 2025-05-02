@@ -14,11 +14,14 @@ var viewPanningMovement = false;
 var lastWinSize = { width: 0, height: 0 };
 
 function copyCode() {
-  const textarea = document.getElementById("code-content");
-
+  // Create a temporary textarea element
+  const tempTextArea = document.createElement('textarea');
+  tempTextArea.value = oldCode;
+  document.body.appendChild(tempTextArea);
+  
   // Select the text
-  textarea.select();
-  textarea.setSelectionRange(0, textarea.value.length); // For mobile compatibility
+  tempTextArea.select();
+  tempTextArea.setSelectionRange(0, tempTextArea.value.length); // For mobile compatibility
 
   // Try to copy
   try {
@@ -31,9 +34,8 @@ function copyCode() {
     alert("Copy error: " + err);
   }
 
-  // Deselect after copy (optional)
-  textarea.setSelectionRange(0, 0);
-  textarea.blur();
+  // Clean up
+  document.body.removeChild(tempTextArea);
 }
 
 function PointRealToView(x, y) {
