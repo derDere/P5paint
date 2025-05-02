@@ -1,4 +1,4 @@
-#code-content {
+/*#code-content {
     position: absolute;
     top: 0;
     left: 0;
@@ -16,7 +16,7 @@
     line-height: 1.4;
     border: 0 none;
     outline: none;
-}
+}*/
 
 #code button {
     position: absolute;

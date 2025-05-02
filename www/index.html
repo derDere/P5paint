@@ -3,8 +3,7 @@
   <head>
     <title>P5paint</title>
     <link rel="icon" type="image/png" href="gfx/favicon.png">
-    <script src="js/p5.js"></script>
-    <script src="js/p5.sound.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/properties.css">
     <link rel="stylesheet" type="text/css" href="css/code.css">
@@ -12,6 +11,11 @@
     <link rel="stylesheet" type="text/css" href="css/main-menu.css">
     <link rel="stylesheet" type="text/css" href="css/fastcounter.css">
     <link rel="stylesheet" type="text/css" href="css/movables.css">
+    <link rel="stylesheet" type="text/css" href="css/prism.css">
+
+    <script src="js/p5.js"></script>
+    <script src="js/p5.sound.min.js"></script>
+
     <meta charset="utf-8" />
   </head>
   <body>
@@ -47,7 +51,7 @@
 
       <div class="movable-window" data-title="Code Generator" data-icon="gfx/code_ico.png" data-anchor="BR" data-width="600" data-height="300" data-m="20">
           <div class="window-content" id="code">
-            <textarea id="code-content" readonly="readonly"></textarea>
+            <pre><code id="code-content" class="language-python"></code></pre>
           </div>
       </div>
 
@@ -79,6 +83,7 @@
     <script src="js/paint_object_list.js"></script>
     <script src="js/paint_object_properties.js"></script>
     <script src="js/sketch.js"></script>
+    <script src="js/prism.js"></script>
 
     <script>
       var fcr = Math.floor(Math.random()*99999999999);
