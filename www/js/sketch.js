@@ -158,6 +158,9 @@ function setup() {
   });
 
   windowResized();
+
+  let loadingScreen = document.getElementById('loading');
+  loadingScreen.style.display = 'none';
 }
 
 function windowResized() {
