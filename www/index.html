@@ -31,8 +31,8 @@
       <div class="menu">
 
         <div id="fastcounter">
-          <span id="fc-44418"></span>
-          <span id="datenschutz-toggle" onclick="toggleDatenschutz();"><span><span>Datenschutz</span></span></span>
+          <span id="fc-44418" title="Anonym ImCounter"></span>
+          <span id="datenschutz-toggle" title="Privacy Policy" onclick="toggleDatenschutz();"><span><span>Datenschutz</span></span></span>
         </div>
 
         <div id="menu"></div>
@@ -40,8 +40,8 @@
         <div id="top-links">
           <a href="V1/" target="_blank">Version 1.0</a> |
           <a href="https://github.com/derDere/P5paint" target="_blank">GitHub/derDere</a> |
-          <a href="README.md" target="_blank">Documentation</a> |
-          <a href="LICENSE" target="_blank">License</a>
+          <!--a href="https://github.com/derDere/P5paint/blob/main/README.md" target="_blank">Documentation</a> |-->
+          <a href="https://github.com/derDere/P5paint/blob/main/LICENSE" target="_blank">License</a>
         </div>
 
       </div>
@@ -62,29 +62,48 @@
           </div>
       </div>
 
-      <div id="page-editor-win" class="movable-window hidden" data-title="Demo Page Settings" data-icon="gfx/page_edit.png" data-anchor="TL" data-width="270" data-height="235" data-m="20">
-          <div class="window-content" id="page-editor"></div>
-      </div>
-
       <div id="tools-win" class="movable-window" data-title="Tools" data-icon="gfx/tools.png" data-anchor="TL" data-width="200" data-height="300" data-m="20">
           <div class="window-content" id="tools"></div>
       </div>
 
-    </div>
+      <div id="page-editor-win" class="movable-window hidden" data-title="Demo Page Settings" data-icon="gfx/page_edit.png" data-anchor="TL" data-width="270" data-height="235" data-m="20,,,240">
+          <div class="window-content" id="page-editor"></div>
+      </div>
 
-    <div id="datenschutz" class="hidden">
-      <h2>Datenschutzerklärung</h2>
-      <p>Unsere Website verwendet den Besucherzähler ImCounter. ImCounter ist ein kostenloser Besucherzähler, welcher die Besucher und Seitenaufrufe auf dieser Internetseite analysiert und auswertet. Dabei werden IP-Adresse, Datum und Uhrzeit der Anfrage, Browsertyp, Browsersprache, Bildschirmauflösung, Referrer und Gerätetyp ausgelesen und an den Betreiber von ImCounter übertragen. Alle Daten werden SSL-verschlüsselt übertragen und selbstverständlich nach den Richtlinien der DSVGO vollständig anonymisiert und ausgewertet. Die IP-Adresse wird während der Übertragung pseudonymisiert, sodass keine personenbezogenen Daten an den Betreiber von ImCounter übermittelt werden.</p><p>Der Datenerhebung und -speicherung können Sie jederzeit mit Wirkung für die Zukunft widersprechen. Um einer Datenerhebung und -speicherung Ihrer Besucherdaten für die Zukunft zu widersprechen, können Sie unter nachfolgendem Link ein Opt-Out-Cookie von ImCounter beziehen, dieser bewirkt, dass zukünftig keine Besucherdaten Ihres Browsers bei ImCounter erhoben und gespeichert werden:  <a href="https://www.imcounter.com/de/privacy/44418.htm">https://www.imcounter.com/de/privacy/44418.htm</a>. Dadurch wird ein Opt-Out-Cookie mit dem Namen "privcookie" von ImCounter gesetzt. Bitte löschen Sie diesen Cookie nicht, solange Sie Ihren Widerspruch aufrecht erhalten möchten.</p><p>Weitere Informationen finden Sie in den Datenschutzbestimmungen von ImCounter: <a href="https://www.imcounter.com/datenschutz.html">https://www.imcounter.com/datenschutz.html</a>.</p>
+      <div id="datenschutz-win" class="movable-window hidden" data-title="Datenschutzerklärung" data-icon="gfx/document_lock.png" data-anchor="TL" data-width="450" data-height="700" data-m="20,,,530">
+          <div class="window-content" id="datenschutz">
+            <p>Unsere Website verwendet den Besucherzähler ImCounter. ImCounter ist ein kostenloser Besucherzähler, welcher die Besucher und Seitenaufrufe auf dieser Internetseite analysiert und auswertet. Dabei werden IP-Adresse, Datum und Uhrzeit der Anfrage, Browsertyp, Browsersprache, Bildschirmauflösung, Referrer und Gerätetyp ausgelesen und an den Betreiber von ImCounter übertragen. Alle Daten werden SSL-verschlüsselt übertragen und selbstverständlich nach den Richtlinien der DSVGO vollständig anonymisiert und ausgewertet. Die IP-Adresse wird während der Übertragung pseudonymisiert, sodass keine personenbezogenen Daten an den Betreiber von ImCounter übermittelt werden.</p>
+            <hr />
+            <p>Der Datenerhebung und -speicherung können Sie jederzeit mit Wirkung für die Zukunft widersprechen. Um einer Datenerhebung und -speicherung Ihrer Besucherdaten für die Zukunft zu widersprechen, können Sie unter nachfolgendem Link ein Opt-Out-Cookie von ImCounter beziehen, dieser bewirkt, dass zukünftig keine Besucherdaten Ihres Browsers bei ImCounter erhoben und gespeichert werden:  <a href="https://www.imcounter.com/de/privacy/44418.htm">imcounter.com/de/privacy/44418.htm</a>. Dadurch wird ein Opt-Out-Cookie mit dem Namen "privcookie" von ImCounter gesetzt. Bitte löschen Sie diesen Cookie nicht, solange Sie Ihren Widerspruch aufrecht erhalten möchten.</p>
+            <hr />
+            <p>Weitere Informationen finden Sie in den Datenschutzbestimmungen von ImCounter: <a href="https://www.imcounter.com/datenschutz.html">imcounter.com/datenschutz.htm</a>.</p>
+            <button id="datenschutz-translate-btn" class="menu-button" onclick="openInTranslator();" title="Translate"></button>
+          </div>
+      </div>
+
     </div>
 
     <script>
       function toggleDatenschutz() {
-        var datenschutz = document.getElementById("datenschutz");
-        if (datenschutz.classList.contains("hidden")) {
-          datenschutz.classList.remove("hidden");
+        let span = document.getElementById('datenschutz-toggle');
+        let datenschutzWinId = "datenschutz-win";
+        let datenschutzWin = document.getElementById(datenschutzWinId);
+        if (datenschutzWin.classList.contains("hidden")) {
+          datenschutzWin.classList.remove("hidden");
+          span.classList.add("active");
+          focusMovableWindow(datenschutzWinId);
         } else {
-          datenschutz.classList.add("hidden");
+          datenschutzWin.classList.add("hidden");
+          span.classList.remove("active");
         }
+      }
+
+      function openInTranslator() {
+        let datenschutz = document.getElementById("datenschutz");
+        let dsContent = "Datenschutzerklärung:\n\n" + datenschutz.innerText;
+        // https://translate.google.com/?sl=de&text=Hallo
+        let url = "https://translate.google.com/?sl=de&text=" + encodeURIComponent(dsContent);
+        window.open(url, "_blank");
       }
     </script>
     <script src="js/movables.js"></script>

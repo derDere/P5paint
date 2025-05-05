@@ -146,10 +146,12 @@ function MainMenu(id) {
     this.editPageBtn.title = 'Edit demo page';
     this.ele.appendChild(this.editPageBtn);
     this._editPageButtonClickHandler = function() {
-        let pageEditorWin = document.getElementById('page-editor-win');
+        const pageEditorWinId = 'page-editor-win';
+        let pageEditorWin = document.getElementById(pageEditorWinId);
         if (pageEditorWin.classList.contains('hidden')) {
             pageEditorWin.classList.remove('hidden');
             this.editPageBtn.classList.add('active');
+            focusMovableWindow(pageEditorWinId);
         } else {
             pageEditorWin.classList.add('hidden');
             this.editPageBtn.classList.remove('active');

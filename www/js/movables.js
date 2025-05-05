@@ -41,18 +41,70 @@ function findGripDirection(ele) {
     return MOVABLE_WINDOW_GRIP_DIR_NONE;
 }
 
-function MovableWindow(ele) {
+const allMovableWindows = [];
 
+function focusMovableWindow(id) {
+    for (let win of allMovableWindows) {
+        if (win.id == id) {
+            win.focusUpdate();
+            return;
+        }
+    }
+}
+
+function MovableWindow(ele) {
+    this.id = ele.id;
     this.ele = ele;
+    allMovableWindows.push(this);
 
     this.initialWidth = parseInt(ele.dataset.width) || 200;
     this.initialHeight = parseInt(ele.dataset.height) || 200;
     this.width = this.initialWidth;
     this.height = this.initialHeight;
-    this.margin = parseInt(ele.dataset.m) || 10;
+    this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
     this.title = ele.dataset.title || "Drag me!";
     this.iconUrl = ele.dataset.icon || "unknown image";
     this.anchor = ele.dataset.anchor || "TL";
+
+    // parseInt(ele.dataset.m) || 10;
+    let marginStrVal = ele.dataset.m;
+    if (marginStrVal) {
+        if (marginStrVal.indexOf(',') != -1) {
+            let parts = marginStrVal.split(',');
+            if (parts.length == 4) {
+                this.margin = {
+                    top: parseInt(parts[0]) || 10,
+                    right: parseInt(parts[1]) || 10,
+                    bottom: parseInt(parts[2]) || 10,
+                    left: parseInt(parts[3]) || 10
+                };
+            }
+            else if (parts.length == 2) {
+                this.margin = {
+                    top: parseInt(parts[0]) || 10,
+                    bottom: parseInt(parts[0]) || 10,
+                    left: parseInt(parts[1]) || 10,
+                    right: parseInt(parts[1]) || 10
+                };
+            }
+            else if (parts.length == 1) {
+                this.margin = {
+                    top: parseInt(parts[0]) || 10,
+                    right: parseInt(parts[0]) || 10,
+                    bottom: parseInt(parts[0]) || 10,
+                    left: parseInt(parts[0]) || 10
+                };
+            }
+        }
+        else {
+            this.margin = {
+                top: parseInt(marginStrVal) || 10,
+                right: parseInt(marginStrVal) || 10,
+                bottom: parseInt(marginStrVal) || 10,
+                left: parseInt(marginStrVal) || 10
+            };
+        }
+    }
 
     this.isMoving = false;
     this.isResizing = false;
@@ -63,16 +115,16 @@ function MovableWindow(ele) {
     this.isMinimized = false;
 
     if (this.anchor.toUpperCase().indexOf("T") != -1) {
-        this.initialOffsetY = this.margin + WIN_AREA_MARGIN_TOP;
+        this.initialOffsetY = this.margin.top + WIN_AREA_MARGIN_TOP;
     }
     if (this.anchor.toUpperCase().indexOf("B") != -1) {
-        this.initialOffsetY = this.margin + WIN_AREA_MARGIN_BOTTOM;
+        this.initialOffsetY = this.margin.bottom + WIN_AREA_MARGIN_BOTTOM;
     }
     if (this.anchor.toUpperCase().indexOf("L") != -1) {
-        this.initialOffsetX = this.margin + WIN_AREA_MARGIN_LEFT;
+        this.initialOffsetX = this.margin.left + WIN_AREA_MARGIN_LEFT;
     }
     if (this.anchor.toUpperCase().indexOf("R") != -1) {
-        this.initialOffsetX = this.margin + WIN_AREA_MARGIN_RIGHT;
+        this.initialOffsetX = this.margin.right + WIN_AREA_MARGIN_RIGHT;
     }
     this.offsetX = this.initialOffsetX;
     this.offsetY = this.initialOffsetY;
@@ -154,6 +206,7 @@ function MovableWindow(ele) {
         }
     }.bind(this);
     this.miniBtn.addEventListener('click', this.toggleMinimize);
+    this.header.addEventListener('dblclick', this.toggleMinimize);
 
     this.stopAction = function(e) {
         if (!this.isMoving && !this.isResizing) return;
@@ -287,10 +340,10 @@ function MovableWindow(ele) {
         const parentHeight = this.ele.parentElement.clientHeight;
         
         // Calculate margins for all sides
-        const leftMargin = WIN_AREA_MARGIN_LEFT + this.margin;
-        const rightMargin = WIN_AREA_MARGIN_RIGHT + this.margin;
-        const topMargin = WIN_AREA_MARGIN_TOP + this.margin;
-        const bottomMargin = WIN_AREA_MARGIN_BOTTOM + this.margin;
+        const leftMargin = WIN_AREA_MARGIN_LEFT + this.margin.left;
+        const rightMargin = WIN_AREA_MARGIN_RIGHT + this.margin.right;
+        const topMargin = WIN_AREA_MARGIN_TOP + this.margin.top;
+        const bottomMargin = WIN_AREA_MARGIN_BOTTOM + this.margin.bottom;
 
         // Fix X position based on anchor
         if (this.anchor.toUpperCase().indexOf("R") != -1) {

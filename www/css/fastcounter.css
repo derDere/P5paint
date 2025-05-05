@@ -72,3 +72,13 @@
   #datenschutz-toggle:active > span::before {
     color: #becbe0;
   }
+
+  #datenschutz-toggle.active {
+    border: 1px solid #3083ff;
+  }
+  #datenschutz-toggle.active > span {
+    background: #3083ff;
+  }
+  #datenschutz-toggle.active > span::before {
+    color: #3083ff;
+  }
